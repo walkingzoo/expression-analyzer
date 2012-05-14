@@ -114,7 +114,7 @@ public class LexicalAnalyzer {
 				curMidState = DFA.getDFAStartState();
 				curWord = new StringBuilder();
 				curToken = null;
-				//每次跳出循环时识别出一个token，或者遇到词法错误
+				//别出一个token，或者遇到词法错误时，跳出循环
 				while(true) {
 					if(nextScanColumn < curLineCharArray.length) {
 						inputChar = curLineCharArray[nextScanColumn]; //取下一字符
