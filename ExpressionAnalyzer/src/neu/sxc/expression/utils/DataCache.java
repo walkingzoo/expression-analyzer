@@ -4,19 +4,20 @@ import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 
 import neu.sxc.expression.test.Printer;
 
 
 public class DataCache {
-	private static List<BigDecimal> bigDecimalCache = new ArrayList<BigDecimal>();
+	private static List<BigDecimal> bigDecimalCache = Collections.synchronizedList(new ArrayList<BigDecimal>());
 
-	private static List<String> stringCache = new ArrayList<String>();
+	private static List<String> stringCache = Collections.synchronizedList(new ArrayList<String>());
 
-	private static List<Character> charCache = new ArrayList<Character>();
+	private static List<Character> charCache = Collections.synchronizedList(new ArrayList<Character>());
 
-	private static List<Calendar> dateCache = new ArrayList<Calendar>();
+	private static List<Calendar> dateCache = Collections.synchronizedList(new ArrayList<Calendar>());
 
 	public static int getBigDecimalIndex(BigDecimal val) {
 		int index = bigDecimalCache.indexOf(val);
