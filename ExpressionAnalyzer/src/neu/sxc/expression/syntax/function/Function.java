@@ -28,7 +28,7 @@ public abstract class Function implements Executable{
 		return functionName;
 	}
 	
-	public Valuable execute(Valuable[] arguments) throws ArgumentsMismatchException {
+	public final Valuable execute(Valuable[] arguments) throws ArgumentsMismatchException {
 		if(getArgumentNum() < 0) {
 			for(Valuable argument : arguments) 
 				if(argument.getDataType() != argumentsDataType[0])
@@ -65,7 +65,7 @@ public abstract class Function implements Executable{
 	}
 	
 	@Override
-	public String toString() {
+	public final String toString() {
 		StringBuilder signature = new StringBuilder();
 		signature.append(functionName).append('(');
 		if(getArgumentNum() >= 0) {
