@@ -154,6 +154,13 @@ public class SyntaxAnalyzer {
 		return index;
 	}
 	
+	/**
+	 * 判断终结符是否匹配
+	 * @param syntaxStackTop
+	 * @param currentToken
+	 * @return
+	 * @throws SyntaxException
+	 */
 	private boolean matchTerminalToken(TerminalToken syntaxStackTop, TerminalToken currentToken)
 							throws SyntaxException {
 		boolean currentTokenMatched = syntaxStackTop.equalsInGrammar(currentToken);
@@ -196,6 +203,12 @@ public class SyntaxAnalyzer {
 				syntaxStack.push(production[i]);
 	}
 	
+	/**
+	 * 执行操作符
+	 * @param operator
+	 * @throws VariableNotInitializedException
+	 * @throws ArgumentsMismatchException
+	 */
 	private void executeOperator(Operator operator) 
 				throws VariableNotInitializedException, ArgumentsMismatchException {
 		Valuable[] arguments = getArgumentsForOperator(operator);
@@ -218,6 +231,12 @@ public class SyntaxAnalyzer {
 		}
 	}
 	
+	/**
+	 * 执行函数
+	 * @param functionRunner
+	 * @throws VariableNotInitializedException
+	 * @throws ArgumentsMismatchException
+	 */
 	private void executeFunction(FunctionRunner functionRunner) 
 				throws VariableNotInitializedException, ArgumentsMismatchException {
 		FunctionToken functionToken = functionTokenStack.pop();
