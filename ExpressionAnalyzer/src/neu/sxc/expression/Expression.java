@@ -100,11 +100,21 @@ public class Expression {
 		return variableNames;
 	}
 	
+	/**
+	 * 设置变量值
+	 * @param name 变量名
+	 * @param value 变量值
+	 */
 	public void setVariableValue(String name, Object value) {
 		RuntimeValue runtimeValue = TokenBuilder.buildRuntimeValue(value);
 		variableTable.put(name, runtimeValue);
 	}
 	
+	/**
+	 * 获取变量值
+	 * @param name 变量名
+	 * @return
+	 */
 	public Valuable getVariableValue(String name) {
 		return variableTable.get(name);
 	}
@@ -117,6 +127,10 @@ public class Expression {
 		variableTable.remove(name);
 	}
 	
+	/**
+	 * 新增函数
+	 * @param function
+	 */
 	public void addFunction(Function function) {
 		functionTable.put(function.getName(), function);
 	}
@@ -137,6 +151,12 @@ public class Expression {
 		return finalResult;
 	}
 	
+	/**
+	 * 解析表达式
+	 * @return 解析结果
+	 * @throws LexicalException
+	 * @throws SyntaxException
+	 */
 	public Valuable evaluate() throws LexicalException, SyntaxException {
 		lexicalAnalysis();
 		SyntaxAnalyzer sa = new SyntaxAnalyzer();
@@ -144,6 +164,10 @@ public class Expression {
 		return finalResult;
 	}
 	
+	/**
+	 * 词法分析，生成符号序列
+	 * @throws LexicalException
+	 */
 	private void lexicalAnalysis() throws LexicalException {
 		LexicalAnalyzer la = new LexicalAnalyzer();
 		tokens = la.analysis(expression, functionTable);

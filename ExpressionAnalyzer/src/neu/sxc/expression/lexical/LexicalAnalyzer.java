@@ -287,6 +287,11 @@ public class LexicalAnalyzer {
 		return matcher.replaceFirst("");
 	}
 	
+	/**
+	 * 判断函数是否存在
+	 * @param functionName
+	 * @return
+	 */
 	private boolean hasFunction(String functionName) {
 		return hasCustomizedFunction(functionName)
 				|| SystemFunctions.hasFunction(functionName);
