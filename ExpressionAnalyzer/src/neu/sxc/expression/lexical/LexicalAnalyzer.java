@@ -164,23 +164,29 @@ public class LexicalAnalyzer {
 							.buildConst();
 			break;
 		case ID_END:
+			//依次判断是否为布尔常量、关键字、函数名，如果都不是，则判断为变量
 			if("true".equals(curWordText) || "TRUE".equals(curWordText)
 					|| "false".equals(curWordText) || "FALSE".equals(curWordText)) {
+				//识别布尔常量
 				curToken = TokenBuilder.getBuilder().line(curLine).column(wordStartColumn)
 								.text(curWordText).dataType(DataType.BOOLEAN)
 								.index(DataCache.getBooleanIndex(Boolean.valueOf(curWordText)))
 								.buildConst();
 			} else if(KEY_WORDS.contains(curWordText)) {
+				//识别关键字
 				curToken = TokenBuilder.getBuilder().line(curLine).column(wordStartColumn)
 								.text(curWordText).buildKey();
 			} else if(hasFunction(curWordText)) {
+				//是否为函数名
 				curToken = TokenBuilder.getBuilder().line(curLine).column(wordStartColumn)
 								.text(curWordText).function(findFunction(curWordText)).buildFunction();
 			} else
+				//变量
 				curToken = TokenBuilder.getBuilder().line(curLine).column(wordStartColumn)
 								.text(curWordText).buildVariable();
 			break;
 		case SINGLE_DELIMITER_END:
+			//判断是否为合法的单字符界符，否则词法错误
 			if(SINGLE_DELIMITERS.contains(curWordText))
 				curToken = TokenBuilder.getBuilder().line(curLine).column(wordStartColumn)
 									.text(curWordText).buildDelimiter();
@@ -188,10 +194,11 @@ public class LexicalAnalyzer {
 				throw new LexicalException("Invalid delimiter.", curLine, wordStartColumn);
 			break;
 		case DOUBLE_DELIMITER_END:
-			if(DOUBLE_DELIMITERS.contains(curWordText)) {
+			if(DOUBLE_DELIMITERS.contains(curWordText)) {	//判断是否为合法的双字符界符
 				curToken = TokenBuilder.getBuilder().line(curLine).column(wordStartColumn)
 								.text(curWordText).buildDelimiter();
 			} else {
+				//取第一个字符，如果是合法的单字符界符，当前列扫描位置减1，下次扫描从第二个界符开始
 				String firstDelimiter = curWordText.substring(0, 1);
 				if(SINGLE_DELIMITERS.contains(firstDelimiter)) {
 					curToken = TokenBuilder.getBuilder().line(curLine).column(wordStartColumn)
@@ -206,10 +213,12 @@ public class LexicalAnalyzer {
 			DateFormat dateFormate;
 			try {
 				if(curWordText.matches(DATE_PATTERN)) {
+					//日期格式yyyy-MM-dd
 					dateFormate = new SimpleDateFormat("[yyyy-MM-dd]");
 					date = Calendar.getInstance();
 					date.setTime(dateFormate.parse(curWordText));
 				} else if(curWordText.matches(ACCURATE_DATE_PATTERN)) {
+					//日期格式yyyy-MM-dd HH:mm:ss
 					dateFormate = new SimpleDateFormat("[yyyy-MM-dd HH:mm:ss]");
 					date = Calendar.getInstance();
 					date.setTime(dateFormate.parse(curWordText));
@@ -230,7 +239,7 @@ public class LexicalAnalyzer {
 			char ch;
 			if(curWordText.length() == 3)
 				ch = curWordText.toCharArray()[1];
-			else
+			else	//识别转义字符
 				ch = ExpressionUtil.getEscapedChar(curWordText.toCharArray()[2]);
 			curToken = TokenBuilder.getBuilder().line(curLine).column(wordStartColumn)
 							.text(curWordText).dataType(DataType.CHARACTER)
@@ -245,6 +254,7 @@ public class LexicalAnalyzer {
 			break;
 		}
 		if(curToken != null) {
+			//添加到Token序列
 			tokens.add((TerminalToken)curToken);
 			findVariableToBeAssigned();
 		}
@@ -297,6 +307,11 @@ public class LexicalAnalyzer {
 				|| SystemFunctions.hasFunction(functionName);
 	}
 	
+	/**
+	 * 查找函数，先判断函数是否为自定义函数，如果不是再判断是否为系统函数
+	 * @param functionName
+	 * @return
+	 */
 	private Function findFunction(String functionName) {
 		if(hasCustomizedFunction(functionName))
 			return functionTable.get(functionName);
@@ -304,6 +319,11 @@ public class LexicalAnalyzer {
 			return SystemFunctions.getFunction(functionName);
 	}
 	
+	/**
+	 * 判断函数是否为自定义函数
+	 * @param functionName
+	 * @return
+	 */
 	private boolean hasCustomizedFunction(String functionName) {
 		if(functionTable == null || functionTable.size() == 0)
 			return false;
