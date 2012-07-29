@@ -24,7 +24,8 @@ import neu.sxc.expression.tokens.Valuable;
 
 /**
  * 表达式
- * @author 单学成
+ * @author shanxuecheng
+ *
  */
 public class Expression {
 	private String expression;
