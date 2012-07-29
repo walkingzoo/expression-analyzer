@@ -29,16 +29,34 @@ import neu.sxc.expression.tokens.Valuable;
 public class Expression {
 	private String expression;
 	
+	/**
+	 * Token序列
+	 */
 	private List<TerminalToken> tokens = new ArrayList<TerminalToken>();
 	
+	/**
+	 * 变量名及其对应的值
+	 */
 	private Map<String, Valuable> variableTable = new HashMap<String, Valuable>();
 	
+	/**
+	 * 函数名及其对应的函数定义
+	 */
 	private Map<String, Function> functionTable = new HashMap<String, Function>();
 	
+	/**
+	 * 表达式最终结果
+	 */
 	private Valuable finalResult;
 	
+	/**
+	 * 出发运算默认采用的scale
+	 */
 	public static int DEFAULT_DIVISION_SCALE = 16;
 	
+	/**
+	 * 除法运算默认使用的舍入方式
+	 */
 	public static RoundingMode DEFAULT_DIVISION_ROUNDING_MODE = RoundingMode.HALF_UP;
 	
 	public Expression() {}
@@ -91,6 +109,11 @@ public class Expression {
 		return tokens;
 	}
 	
+	/**
+	 * 所有变量名，首先进行词法分析，然后返回所有变量名
+	 * @return
+	 * @throws LexicalException
+	 */
 	public Set<String> getVariableNames() throws LexicalException {
 		lexicalAnalysis();
 		Set<String> variableNames = new HashSet<String>();
