@@ -1,5 +1,10 @@
 package neu.sxc.expression.lexical.dfa;
 
+/**
+ * 定义有限自动机的结束状态代码
+ * @author shanxuecheng
+ *
+ */
 public enum DFAEndStateCode {
 	NUMBER_END,	//数字结束状态
 	

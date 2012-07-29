@@ -2,6 +2,11 @@ package neu.sxc.expression.lexical.dfa;
 
 import static neu.sxc.expression.lexical.LexicalConstants.*;
 
+/**
+ * 有限自动机的定义，包括所有状态和路径的初始化
+ * @author shanxuecheng
+ *
+ */
 public class DFADefinition {
 	private static DFADefinition dfa = new DFADefinition();
 	
