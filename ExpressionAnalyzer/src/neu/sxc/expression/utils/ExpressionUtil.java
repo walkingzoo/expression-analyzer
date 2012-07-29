@@ -1,6 +1,11 @@
 package neu.sxc.expression.utils;
 
 public class ExpressionUtil {
+	/**
+	 * 根据反斜杠后接的字符，返回转义字符
+	 * @param escape
+	 * @return
+	 */
 	public static char getEscapedChar(char escape) {
 		char escapedChar = 0;
 		switch(escape){
@@ -32,6 +37,11 @@ public class ExpressionUtil {
 		return escapedChar;
 	}
 	
+	/**
+	 * 替换字符串中的转义字符
+	 * @param target
+	 * @return
+	 */
 	public static String transformEscapesInString(String target) {
 		target = target.replaceAll("\\\\\\\\", "\\");
 		target = target.replaceAll("\\\\b", "\b");
