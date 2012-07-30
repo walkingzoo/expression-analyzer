@@ -1,7 +1,14 @@
 package neu.sxc.expression.tokens;
 
+/**
+ * VariableToken
+ * @author shanxuecheng
+ *
+ */
 public final class VariableToken extends ValueToken {
-	
+	/**
+	 * 是否是被赋值的变量，即变量在表达式中处于赋值操作符的左边
+	 */
 	private boolean toBeAssigned;
 
 	public VariableToken(TokenBuilder builder) {

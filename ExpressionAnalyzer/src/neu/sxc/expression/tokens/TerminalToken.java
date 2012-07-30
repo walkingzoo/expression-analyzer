@@ -2,8 +2,14 @@ package neu.sxc.expression.tokens;
 
 public abstract class TerminalToken implements Token {
 
+	/**
+	 * 行号
+	 */
 	private final int line;
 	
+	/**
+	 * 列号
+	 */
 	private final int column;
 	
 	private final String text;
@@ -26,5 +32,10 @@ public abstract class TerminalToken implements Token {
 		return text;
 	}
 	
+	/**
+	 * 与文法中的符号是否匹配
+	 * @param target
+	 * @return
+	 */
 	public abstract boolean equalsInGrammar(TerminalToken target);
 }
