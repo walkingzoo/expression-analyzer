@@ -1,5 +1,10 @@
 package neu.sxc.expression.tokens;
 
+/**
+ * 终结符
+ * @author shanxuecheng
+ *
+ */
 public abstract class TerminalToken implements Token {
 
 	/**
