@@ -6,10 +6,21 @@ import neu.sxc.expression.tokens.DataType;
 import neu.sxc.expression.tokens.TokenBuilder;
 import neu.sxc.expression.tokens.Valuable;
 
+/**
+ * 函数定义抽象类
+ * @author shanxuecheng
+ *
+ */
 public abstract class Function implements Executable{
 
+	/**
+	 * 函数名
+	 */
 	private final String functionName;
 	
+	/**
+	 * 参数类型
+	 */
 	private final DataType[] argumentsDataType;
 	
 	public Function(String functionName) {
@@ -28,11 +39,19 @@ public abstract class Function implements Executable{
 		return functionName;
 	}
 	
+	/**
+	 * 执行函数
+	 */
 	public final Valuable execute(Valuable[] arguments) throws ArgumentsMismatchException {
-		if(getArgumentNum() < 0) {
-			for(Valuable argument : arguments) 
+		if(getArgumentNum() < 0) {	//可变参数
+			//检查参数类型是否一致
+			for(Valuable argument : arguments) {
+				if(argumentsDataType[0] == DataType.ANY)
+					break;
+				
 				if(argument.getDataType() != argumentsDataType[0])
 					throw new ArgumentsMismatchException(arguments, toString());
+			}
 		} else if(getArgumentNum() == arguments.length) {
 			int argumentNum = getArgumentNum(); 
 			for(int i=0; i<argumentNum; i++) {
@@ -45,15 +64,23 @@ public abstract class Function implements Executable{
 		} else {
 			throw new ArgumentsMismatchException(arguments, toString());
 		}
-		
+		//执行函数
 		Object result = executeFunction(arguments);
 		return TokenBuilder.buildRuntimeValue(result);
 	}
 
+	/**
+	 * 函数执行逻辑
+	 * @param arguments
+	 * @return
+	 */
 	protected abstract Object executeFunction(Valuable[] arguments);
 	
+	/**
+	 * 检查函数定义
+	 */
 	private void checkFunctionDefinition() {
-		if(getArgumentNum() >= 0){
+		if(getArgumentNum() >= 0) {
 			if(argumentsDataType.length != getArgumentNum()) {
 				throw new RuntimeException("Function definition error:" + getName() + ".");
 			}
