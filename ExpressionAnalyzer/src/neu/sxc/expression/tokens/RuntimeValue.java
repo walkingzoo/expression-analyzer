@@ -5,11 +5,21 @@ import java.util.Calendar;
 
 import neu.sxc.expression.utils.ValueUtil;
 
-
+/**
+ * 运行时的中间值
+ * @author shanxuecheng
+ *
+ */
 public final class RuntimeValue implements Valuable {
 
+	/**
+	 * 数据类型
+	 */
 	private DataType dataType;
 	
+	/**
+	 * 在数据缓存中的索引
+	 */
 	private int index;
 	
 	public RuntimeValue(TokenBuilder builder) {
