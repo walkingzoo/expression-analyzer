@@ -307,6 +307,7 @@ public class SyntaxAnalyzer {
 	private void controlExcution(Control control) throws SyntaxException {
 		switch(control) {
 		case IF_CONDITION:
+			//取if后的条件，并压入条件栈
 			Valuable condition = semanticStack.pop();
 			if(condition.getDataType() != DataType.BOOLEAN)
 				throw new SyntaxException("Type mismatch: cannot convert from " +
@@ -315,21 +316,29 @@ public class SyntaxAnalyzer {
 				conditionStack.push(condition.getBooleanValue());
 			break;
 		case ELSE_CONDITION:
+			//设置else部分的条件，即从条件栈中弹出其对应的if部分的条件，取反重新压入
 			conditionStack.push(!conditionStack.pop());
 			break;
 		case END_IF:
+			//if语句结束，从条件栈中弹出条件
 			conditionStack.pop();
 			break;
-		case NEW_CONTEXT:
+		case NEW_CONTEXT:	//新建上下文
+			//取条件栈顶作为新建上下文是否有效的标志
 			boolean effective = conditionStack.top();
+			//从上下文栈中取当前上下文
 			Context currentContext = contextStack.top();
+			//基于当前上下文创建新的上下文，并压入上下文栈
 			contextStack.push(currentContext.constructUpon(effective, semanticStack.size()));
 			break;
 		case END_CONTEXT:
+			//上下文结束，从上下文栈弹出
 			Context topContext = contextStack.pop();
 			if(topContext.isEffective()) {
+				//如果该上下文有效，即条件为真true，则将其更新到当前栈顶上下文
 				contextStack.top().update(topContext);
 			} else {
+				//如果该上下文无效，即条件为false，则在语义栈中将其开始位置之后的所有元素弹出
 				recoverSemanticStack(topContext.getStartIndex());
 			}
 			break;
@@ -346,6 +355,10 @@ public class SyntaxAnalyzer {
 		currentContext.setVariableValue(text, value);
 	}
 	
+	/**
+	 * 弹出语义栈在指定位置之后的所有元素
+	 * @param startIndex
+	 */
 	private void recoverSemanticStack(int startIndex) {
 		while(semanticStack.size() > startIndex)
 			semanticStack.pop();
