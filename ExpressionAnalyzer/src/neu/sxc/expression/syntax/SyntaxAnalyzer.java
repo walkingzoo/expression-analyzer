@@ -25,10 +25,13 @@ import neu.sxc.expression.utils.Stack;
 
 /**
  * 语法分析
- * @author 单学成
+ * @author shanxuecheng
  *
  */
 public class SyntaxAnalyzer {
+	/**
+	 * 文法
+	 */
 	private Grammar grammar = Grammar.getGrammar();
 	
 	/**
@@ -41,10 +44,19 @@ public class SyntaxAnalyzer {
 	 */
 	private Stack<Token> syntaxStack = new Stack<Token>();
 	
+	/**
+	 * 语义栈
+	 */
 	private Stack<Valuable> semanticStack = new Stack<Valuable>();
 	
+	/**
+	 * 操作符栈
+	 */
 	private Stack<DelimiterToken> operatorTokenStack = new Stack<DelimiterToken>();
 	
+	/**
+	 * 函数栈
+	 */
 	private Stack<FunctionToken> functionTokenStack = new Stack<FunctionToken>();
 	
 	/**
@@ -78,6 +90,13 @@ public class SyntaxAnalyzer {
 		return analysis(tokens, null);
 	}
 	
+	/**
+	 * 解析表达式
+	 * @param tokens Token序列
+	 * @param variableTable 变量表
+	 * @return
+	 * @throws SyntaxException
+	 */
 	public Valuable analysis(List<TerminalToken> tokens, Map<String, Valuable> variableTable)
 				throws SyntaxException {
 		this.finalResult = null;
@@ -87,6 +106,7 @@ public class SyntaxAnalyzer {
 		
 		int index = 0;
 		while(index < tokens.size()) {
+			//一条语句解析结束时，返回下一语句的开始位置
 			index = analysisSentence(tokens, index);
 		}
 		
@@ -94,7 +114,7 @@ public class SyntaxAnalyzer {
 	}
 	
 	/**
-	 * 解析一条语句
+	 * 解析一条语句，解析成功后返回下一语句的开始位置
 	 * @param tokens
 	 * @param index
 	 * @return
@@ -110,6 +130,7 @@ public class SyntaxAnalyzer {
 			syntaxStackTop = syntaxStack.pop();
 			switch(syntaxStackTop.getTokenType()) {
 			case NT:
+				//遇到非终结符时，查找产生式
 				Token[] production = ((NonterminalToken)syntaxStackTop).getProduction(currentToken);
 				if(production != null)
 					reverseProductionIntoSyntaxStack(production);
@@ -130,12 +151,14 @@ public class SyntaxAnalyzer {
 			case CONTROLLER:
 				ControlToken controlToken = (ControlToken)syntaxStackTop;
 				try {
+					//流程控制
 					controlExcution(controlToken.getControl());
 				} catch (SyntaxException e) {
 					throw new SyntaxException(e.getMessage(), currentToken, e);
 				}
 				break;
 			default:
+				//匹配终结符
 				if(matchTerminalToken((TerminalToken)syntaxStackTop, currentToken)
 						&& !syntaxStack.isEmpty()) {
 					if(index < tokens.size())
@@ -276,6 +299,11 @@ public class SyntaxAnalyzer {
 		return arguments;
 	}
 	
+	/**
+	 * 流程控制
+	 * @param control
+	 * @throws SyntaxException
+	 */
 	private void controlExcution(Control control) throws SyntaxException {
 		switch(control) {
 		case IF_CONDITION:
