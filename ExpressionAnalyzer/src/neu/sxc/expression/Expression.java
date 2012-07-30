@@ -51,7 +51,7 @@ public class Expression {
 	private Valuable finalResult;
 	
 	/**
-	 * 出发运算默认采用的scale
+	 * 除法运算默认采用的scale
 	 */
 	public static int DEFAULT_DIVISION_SCALE = 16;
 	
