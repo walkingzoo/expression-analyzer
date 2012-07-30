@@ -284,12 +284,20 @@ public class SyntaxAnalyzer {
 		return getArguments(argumentNum, false);
 	}
 	
+	/**
+	 * 获取参数（操作符和函数）
+	 * @param argumentNum
+	 * @param isForAssignment
+	 * @return
+	 * @throws VariableNotInitializedException
+	 */
 	private Valuable[] getArguments(int argumentNum, boolean isForAssignment)
 					throws VariableNotInitializedException {
 		Valuable[] arguments = new Valuable[argumentNum];
 		for(int i=argumentNum-1; i>=0; i--) {
 			arguments[i] = semanticStack.pop();
 			if(arguments[i].getTokenType() == TokenType.VARIABLE) {
+				//如果参数是变量，则检查变量是否已定义，赋值操作中被赋值变量除外
 				if(isForAssignment && i == 0)
 					break;
 				else if(arguments[i].getIndex() < 0) 
