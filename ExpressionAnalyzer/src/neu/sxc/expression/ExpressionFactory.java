@@ -4,6 +4,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 
+/**
+ * 表达式工厂类
+ * @author shanxuecheng
+ *
+ */
 public class ExpressionFactory {
 	
 	private static ExpressionFactory expressionFactory = new ExpressionFactory();
