@@ -178,8 +178,8 @@ public class Expression {
 	/**
 	 * 解析表达式
 	 * @return 解析结果
-	 * @throws LexicalException
-	 * @throws SyntaxException
+	 * @throws LexicalException 词法错误异常
+	 * @throws SyntaxException 语法错误异常
 	 */
 	public Valuable evaluate() throws LexicalException, SyntaxException {
 		lexicalAnalysis();
