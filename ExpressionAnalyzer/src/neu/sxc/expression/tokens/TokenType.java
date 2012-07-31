@@ -1,5 +1,10 @@
 package neu.sxc.expression.tokens;
 
+/**
+ * Token类型
+ * @author shanxuecheng
+ *
+ */
 public enum TokenType {
 	/**
 	 * 非终结符

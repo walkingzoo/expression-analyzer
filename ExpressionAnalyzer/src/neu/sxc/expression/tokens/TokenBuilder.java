@@ -7,7 +7,11 @@ import neu.sxc.expression.syntax.Executable;
 import neu.sxc.expression.syntax.function.Function;
 import neu.sxc.expression.utils.DataCache;
 
-
+/**
+ * 创建token
+ * @author shanxuecheng
+ *
+ */
 public class TokenBuilder {
 	
 	private int line = -1;

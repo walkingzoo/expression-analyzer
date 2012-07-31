@@ -1,5 +1,10 @@
 package neu.sxc.expression.tokens;
 
+/**
+ * 界符
+ * @author shanxuecheng
+ *
+ */
 public final class DelimiterToken extends TerminalToken {
 
 	public DelimiterToken(TokenBuilder builder) {

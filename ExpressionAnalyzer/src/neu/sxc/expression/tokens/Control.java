@@ -1,5 +1,10 @@
 package neu.sxc.expression.tokens;
 
+/**
+ * 流程控制类型
+ * @author shanxuecheng
+ *
+ */
 public enum Control {
 	/**
 	 * if条件

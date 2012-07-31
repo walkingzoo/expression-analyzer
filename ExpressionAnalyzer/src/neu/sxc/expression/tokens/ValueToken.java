@@ -5,11 +5,21 @@ import java.util.Calendar;
 
 import neu.sxc.expression.utils.ValueUtil;
 
-
+/**
+ * 可取值符号
+ * @author shanxuecheng
+ *
+ */
 public abstract class ValueToken extends TerminalToken implements Valuable {
 	
+	/**
+	 * 数据类型
+	 */
 	private DataType dataType;
 	
+	/**
+	 * 在数据缓存中的索引
+	 */
 	private int index;
 	
 	public ValueToken(TokenBuilder builder) {

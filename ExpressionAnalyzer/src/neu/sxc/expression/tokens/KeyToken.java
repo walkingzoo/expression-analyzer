@@ -1,5 +1,10 @@
 package neu.sxc.expression.tokens;
 
+/**
+ * 关键字符号
+ * @author shanxuecheng
+ *
+ */
 public final class KeyToken extends TerminalToken {
 
 	public KeyToken(TokenBuilder builder) {

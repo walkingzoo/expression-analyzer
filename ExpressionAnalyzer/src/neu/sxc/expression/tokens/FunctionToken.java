@@ -2,8 +2,16 @@ package neu.sxc.expression.tokens;
 
 import neu.sxc.expression.syntax.function.Function;
 
+/**
+ * 函数符号
+ * @author shanxuecheng
+ *
+ */
 public final class FunctionToken extends TerminalToken {
 
+	/**
+	 * 函数定义
+	 */
 	private final Function function;
 	
 	public FunctionToken(TokenBuilder builder) {

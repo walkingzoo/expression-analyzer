@@ -1,5 +1,10 @@
 package neu.sxc.expression.tokens;
 
+/**
+ * 流程控制符号
+ * @author shanxuecheng
+ *
+ */
 public class ControlToken implements Token {
 	
 	Control control;

@@ -1,5 +1,10 @@
 package neu.sxc.expression.tokens;
 
+/**
+ * 常量
+ * @author shanxuecheng
+ *
+ */
 public final class ConstToken extends ValueToken {
 
 	public ConstToken(TokenBuilder builder) {

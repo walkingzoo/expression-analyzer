@@ -1,5 +1,10 @@
 package neu.sxc.expression.tokens;
 
+/**
+ * 数据类型
+ * @author shanxuecheng
+ *
+ */
 public enum DataType {
 	/**
 	 * 数字
