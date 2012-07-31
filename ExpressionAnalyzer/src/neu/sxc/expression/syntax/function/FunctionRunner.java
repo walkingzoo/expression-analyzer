@@ -4,6 +4,11 @@ import neu.sxc.expression.syntax.ArgumentsMismatchException;
 import neu.sxc.expression.syntax.Executable;
 import neu.sxc.expression.tokens.Valuable;
 
+/**
+ * 代理函数执行
+ * @author shanxuecheng
+ *
+ */
 public class FunctionRunner implements Executable {
 	
 	Function function;

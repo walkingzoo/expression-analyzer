@@ -3,6 +3,11 @@ package neu.sxc.expression.syntax.function;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * 注册系统函数
+ * @author shanxuecheng
+ *
+ */
 public class SystemFunctions {
 	
 	private static Map<String, Function> systemFunctions = new HashMap<String, Function>();
