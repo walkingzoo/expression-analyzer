@@ -3,7 +3,7 @@ package neu.sxc.expression.syntax;
 import neu.sxc.expression.tokens.Valuable;
 
 /**
- * 可执行符号接口
+ * 可执行动作接口
  * @author shanxuecheng
  *
  */
