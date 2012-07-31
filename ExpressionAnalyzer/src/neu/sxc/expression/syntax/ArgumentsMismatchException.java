@@ -3,6 +3,11 @@ package neu.sxc.expression.syntax;
 import neu.sxc.expression.tokens.TerminalToken;
 import neu.sxc.expression.tokens.Valuable;
 
+/**
+ * 参数不匹配异常
+ * @author shanxuecheng
+ *
+ */
 @SuppressWarnings("serial")
 public class ArgumentsMismatchException extends SyntaxException {
 	

@@ -2,6 +2,11 @@ package neu.sxc.expression.syntax;
 
 import neu.sxc.expression.tokens.VariableToken;
 
+/**
+ * 变量未初始化异常
+ * @author shanxuecheng
+ *
+ */
 @SuppressWarnings("serial")
 public class VariableNotInitializedException extends SyntaxException {
 	
