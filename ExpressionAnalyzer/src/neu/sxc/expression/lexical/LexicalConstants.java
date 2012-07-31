@@ -7,7 +7,11 @@ import java.util.List;
 import neu.sxc.expression.tokens.DelimiterToken;
 import neu.sxc.expression.tokens.TokenBuilder;
 
-
+/**
+ * 词法分析常量
+ * @author shanxuecheng
+ *
+ */
 public class LexicalConstants {
 	private LexicalConstants() {}
 	

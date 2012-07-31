@@ -2,6 +2,11 @@ package neu.sxc.expression.lexical;
 
 import neu.sxc.expression.lexical.dfa.DFAMidState;
 
+/**
+ * 词法异常
+ * @author shanxuecheng
+ *
+ */
 @SuppressWarnings("serial")
 public class LexicalException extends RuntimeException{
 	
