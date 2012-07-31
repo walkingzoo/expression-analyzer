@@ -2,6 +2,11 @@ package neu.sxc.expression.syntax;
 
 import neu.sxc.expression.tokens.TerminalToken;
 
+/**
+ * 语法异常
+ * @author shanxuecheng
+ *
+ */
 @SuppressWarnings("serial")
 public class SyntaxException extends RuntimeException{
 	

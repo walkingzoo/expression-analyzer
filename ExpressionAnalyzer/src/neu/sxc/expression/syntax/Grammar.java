@@ -15,6 +15,11 @@ import neu.sxc.expression.tokens.Token;
 import neu.sxc.expression.tokens.TokenBuilder;
 import neu.sxc.expression.tokens.VariableToken;
 
+/**
+ * 文法及文法符号初始化
+ * @author shanxuecheng
+ *
+ */
 public class Grammar {
 	private static Grammar grammar = new Grammar();
 	
