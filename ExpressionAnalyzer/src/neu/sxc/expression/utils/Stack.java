@@ -2,6 +2,12 @@ package neu.sxc.expression.utils;
 
 import java.util.*;
 
+/**
+ * 栈
+ * @author shanxuecheng
+ *
+ * @param <T>
+ */
 public class Stack<T> {
 	private ArrayList<T> arrayList = new ArrayList<T>();
 	

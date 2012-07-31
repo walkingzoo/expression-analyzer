@@ -9,7 +9,11 @@ import java.util.List;
 
 import neu.sxc.expression.test.Printer;
 
-
+/**
+ * 数据缓存
+ * @author shanxuecheng
+ *
+ */
 public class DataCache {
 	private static List<BigDecimal> bigDecimalCache = Collections.synchronizedList(new ArrayList<BigDecimal>());
 
