@@ -11,6 +11,9 @@ public abstract class BinaryOperator extends Operator {
 		super(operator);
 	}
 
+	/**
+	 * 操作数个数为2
+	 */
 	public final int getArgumentNum() {
 		return 2;
 	}

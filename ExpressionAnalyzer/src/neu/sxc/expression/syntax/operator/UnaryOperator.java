@@ -11,6 +11,9 @@ public abstract class UnaryOperator extends Operator {
 		super(operatorName);
 	}
 
+	/**
+	 * 操作数个数为1
+	 */
 	public final int getArgumentNum() {
 		return 1;
 	}
