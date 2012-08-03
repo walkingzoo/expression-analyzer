@@ -28,7 +28,7 @@ import neu.sxc.expression.utils.ExpressionUtil;
 
 /**
  * 词法分析
- * @author 单学成
+ * @author shanxuecheng
  *
  */
 public class LexicalAnalyzer {
