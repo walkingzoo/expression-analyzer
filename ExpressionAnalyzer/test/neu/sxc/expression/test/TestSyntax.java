@@ -2,7 +2,6 @@ package neu.sxc.expression.test;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.math.BigDecimal;
 
 import neu.sxc.expression.Expression;
 import neu.sxc.expression.ExpressionFactory;
@@ -30,7 +29,7 @@ public class TestSyntax extends TestCase{
 		Expression expression = factory.getExpression("a = 2 / 3;");
 		evaluate(expression);
 		Valuable a = expression.getVariableValue("a");
-		BigDecimal _a = a.getNumberValue();
+		Printer.println(a.getNumberValue());
 	}
 	
 	public void testCompare() {
