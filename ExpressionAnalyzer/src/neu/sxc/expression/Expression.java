@@ -84,7 +84,7 @@ public class Expression {
 	      int c;
 	      while ((c = source.read()) != -1)
 	        sb.append((char)c);
-	      	setExpression(sb.toString());
+	      setExpression(sb.toString());
 	    } finally {
 	    	source.close();
 	    }
@@ -96,7 +96,7 @@ public class Expression {
 	      int c;
 	      while ((c = source.read()) != -1)
 	        sb.append((char)c);
-	      	setExpression(sb.toString());
+	      setExpression(sb.toString());
 	    } finally {
 	    	source.close();
 	    }
