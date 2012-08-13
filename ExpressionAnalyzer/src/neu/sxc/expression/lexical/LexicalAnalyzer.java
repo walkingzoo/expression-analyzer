@@ -54,8 +54,6 @@ public class LexicalAnalyzer {
 	
 	private List<TerminalToken> tokens;
 	
-	private Scanner scanner;
-	
 	/**
 	 * 表达式中涉及的函数
 	 */
@@ -72,13 +70,15 @@ public class LexicalAnalyzer {
 	}
 	
 	public List<TerminalToken> analysis(String expression, Map<String, Function> functionTable) throws LexicalException {
+		
 		if(expression == null || expression.length() == 0)
 			throw new LexicalException("Invalid empty expression.");
-		this.scanner = new Scanner(expression);
+		
+		Scanner scanner = new Scanner(expression);
 		this.functionTable = functionTable;
 		prepareLexicalAnalyzer();
 		try {
-			doAnalysis();
+			doAnalysis(scanner);
 		} finally {
 			scanner.close();
 		}
@@ -98,7 +98,7 @@ public class LexicalAnalyzer {
 	 * @return
 	 * @throws LexicalException 
 	 */
-	private void doAnalysis() throws LexicalException {
+	private void doAnalysis(Scanner scanner) throws LexicalException {
 		char[] curLineCharArray;	//字符数组用于存放当前行
 		char inputChar;
 		DFAMidState curMidState = null;		//当前到达的中间状态
@@ -106,7 +106,7 @@ public class LexicalAnalyzer {
 		DFAEndStateCode endStateCode = null;	//结束状态
 		
 		while(scanner.hasNextLine()) {
-			curLineCharArray = nextLine().toCharArray();//读取下一行
+			curLineCharArray = nextLine(scanner).toCharArray();//读取下一行
 			curLine++;
 			nextScanColumn = 0;
 			while(escapeBlank(curLineCharArray) < curLineCharArray.length) {
@@ -287,7 +287,7 @@ public class LexicalAnalyzer {
 	/**
 	 * @return 下一行，去掉注释
 	 */
-	private String nextLine(){
+	private String nextLine(Scanner scanner){
 		return discardComment(scanner.nextLine());
 	}
 	
