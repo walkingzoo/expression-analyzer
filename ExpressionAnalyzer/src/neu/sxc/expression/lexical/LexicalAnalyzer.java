@@ -285,12 +285,9 @@ public class LexicalAnalyzer {
 	 * @return 下一行，去掉注释
 	 */
 	private String nextLine(Scanner scanner){
-		return discardComment(scanner.nextLine());
-	}
-	
-	private String discardComment(String target) {
+		String nextLine = scanner.nextLine();
 		Pattern commentPattern = Pattern.compile("##.*");
-		Matcher matcher = commentPattern.matcher(target);
+		Matcher matcher = commentPattern.matcher(nextLine);
 		return matcher.replaceFirst("");
 	}
 	
