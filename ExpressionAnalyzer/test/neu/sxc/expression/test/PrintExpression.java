@@ -51,12 +51,8 @@ public class PrintExpression {
 		case CONST:
 			ValueToken constToken = (ValueToken)token;
 			Printer.print(", DateType:" + constToken.getDataType().name());
-			Printer.print(", line:" + constToken.getLine() + ", column:" + constToken.getColumn() + ", text: " + constToken.getText()
+			Printer.println(", line:" + constToken.getLine() + ", column:" + constToken.getColumn() + ", text: " + constToken.getText()
 					+ ", index: " + constToken.getIndex());
-			if(constToken.getIndex() >= 0)
-				Printer.println(", index: " + constToken.getIndex());
-			else
-				Printer.println();
 			break;
 		case VARIABLE:
 			ValueToken variableToken = (ValueToken)token;

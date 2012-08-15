@@ -1,10 +1,13 @@
 package neu.sxc.expression.test;
 
+import java.util.List;
+
+import junit.framework.TestCase;
 import neu.sxc.expression.Expression;
 import neu.sxc.expression.ExpressionFactory;
 import neu.sxc.expression.lexical.LexicalAnalyzer;
 import neu.sxc.expression.lexical.LexicalException;
-import junit.framework.TestCase;
+import neu.sxc.expression.tokens.TerminalToken;
 
 
 public class TestLexical extends TestCase {
@@ -45,12 +48,17 @@ public class TestLexical extends TestCase {
 		lexicalAnalysis(expression);
 	}
 	
+	public void testError() {
+		Expression expression = factory.getExpression(" &2");
+		lexicalAnalysis(expression);
+	}
+	
 	private void lexicalAnalysis(Expression expression) {
 		LexicalAnalyzer la = new LexicalAnalyzer();
 		try {
-			la.analysis(expression.getExpression(), expression.getFunctionTable());
+			List<TerminalToken> tokens = la.analysis(expression.getExpression(), expression.getFunctionTable());
 			PrintExpression.printDatas();
-			PrintExpression.printTokens(la.getTokens());
+			PrintExpression.printTokens(tokens);
 		} catch (LexicalException e) {
 			e.printStackTrace();
 		}
