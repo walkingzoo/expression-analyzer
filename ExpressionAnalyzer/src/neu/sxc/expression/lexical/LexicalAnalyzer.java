@@ -176,16 +176,13 @@ public class LexicalAnalyzer {
 								.text(curWordText).dataType(DataType.BOOLEAN)
 								.index(DataCache.getBooleanIndex(Boolean.valueOf(curWordText)))
 								.buildConst();
-			} else if(KEY_WORDS.contains(curWordText)) {
-				//识别关键字
+			} else if(KEY_WORDS.contains(curWordText)) { //识别关键字
 				curToken = TokenBuilder.getBuilder().line(curLine).column(wordStartColumn)
 								.text(curWordText).buildKey();
-			} else if(hasFunction(curWordText)) {
-				//是否为函数名
+			} else if(hasFunction(curWordText)) { //函数
 				curToken = TokenBuilder.getBuilder().line(curLine).column(wordStartColumn)
 								.text(curWordText).function(findFunction(curWordText)).buildFunction();
-			} else
-				//变量
+			} else //变量
 				curToken = TokenBuilder.getBuilder().line(curLine).column(wordStartColumn)
 								.text(curWordText).buildVariable();
 			break;
