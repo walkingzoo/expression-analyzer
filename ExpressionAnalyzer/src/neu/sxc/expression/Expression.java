@@ -51,6 +51,11 @@ public class Expression {
 	private Valuable finalResult;
 	
 	/**
+	 * 词法分析器
+	 */
+	private LexicalAnalyzer lexicalAnalyzer = new LexicalAnalyzer();
+	
+	/**
 	 * 除法运算默认采用的scale
 	 */
 	public static int DEFAULT_DIVISION_SCALE = 16;
@@ -116,7 +121,7 @@ public class Expression {
 	 * @throws LexicalException
 	 */
 	public Set<String> getVariableNames() throws LexicalException {
-		lexicalAnalysis();
+		tokens = lexicalAnalyzer.analysis(expression, functionTable);
 		Set<String> variableNames = new HashSet<String>();
 		for(TerminalToken terminalToken : tokens)
 			if(terminalToken.getTokenType() == TokenType.VARIABLE)
@@ -182,19 +187,10 @@ public class Expression {
 	 * @throws SyntaxException 语法错误异常
 	 */
 	public Valuable evaluate() throws LexicalException, SyntaxException {
-		lexicalAnalysis();
+		tokens = lexicalAnalyzer.analysis(expression, functionTable);
 		SyntaxAnalyzer sa = new SyntaxAnalyzer();
-		finalResult = sa.analysis(getTokens(), variableTable);
+		finalResult = sa.analysis(tokens, variableTable);
 		return finalResult;
-	}
-	
-	/**
-	 * 词法分析，生成符号序列
-	 * @throws LexicalException
-	 */
-	private void lexicalAnalysis() throws LexicalException {
-		LexicalAnalyzer la = new LexicalAnalyzer();
-		tokens = la.analysis(expression, functionTable);
 	}
 	
 	public void clear() {
