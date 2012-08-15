@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.math.RoundingMode;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -33,7 +32,7 @@ public class Expression {
 	/**
 	 * Token序列
 	 */
-	private List<TerminalToken> tokens = new ArrayList<TerminalToken>();
+	private List<TerminalToken> tokens;
 	
 	/**
 	 * 变量名及其对应的值
@@ -54,6 +53,11 @@ public class Expression {
 	 * 词法分析器
 	 */
 	private LexicalAnalyzer lexicalAnalyzer = new LexicalAnalyzer();
+	
+	/**
+	 * 语法分析器
+	 */
+	private SyntaxAnalyzer syntaxAnalyzer= new SyntaxAnalyzer();
 	
 	/**
 	 * 除法运算默认采用的scale
@@ -188,8 +192,7 @@ public class Expression {
 	 */
 	public Valuable evaluate() throws LexicalException, SyntaxException {
 		tokens = lexicalAnalyzer.analysis(expression, functionTable);
-		SyntaxAnalyzer sa = new SyntaxAnalyzer();
-		finalResult = sa.analysis(tokens, variableTable);
+		finalResult = syntaxAnalyzer.analysis(tokens, variableTable);
 		return finalResult;
 	}
 	
