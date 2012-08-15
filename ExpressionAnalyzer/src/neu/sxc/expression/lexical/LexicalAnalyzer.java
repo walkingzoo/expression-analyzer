@@ -39,20 +39,19 @@ public class LexicalAnalyzer {
 	private DFADefinition DFA = DFADefinition.getDFA();
 	
 	/**
-	 * 当前正在识别的Token
+	 * 当前解析位置行号
 	 */
-	private TerminalToken curToken;
-	
-	/**
-	 * 存放当前Token的字符
-	 */
-	private StringBuilder curWord;
-	
 	private int curLine = 0;
 	
+	/**
+	 * 下次读取列号
+	 */
 	private int nextScanColumn = 0;
 	
-	private List<TerminalToken> tokens;
+	/**
+	 * 存放正在解析的Token的字面内容
+	 */
+	private StringBuilder curWord = new StringBuilder();
 	
 	/**
 	 * 表达式中涉及的函数
@@ -61,91 +60,94 @@ public class LexicalAnalyzer {
 	
 	public LexicalAnalyzer() {}
 	
-	public List<TerminalToken> getTokens() {
-		return tokens;
-	}
-	
+	/**
+	 * 词法分析
+	 * @param expression 表达式
+	 * @return
+	 * @throws LexicalException
+	 */
 	public List<TerminalToken> analysis(String expression) throws LexicalException {
 		return analysis(expression, null);
 	}
 	
+	/**
+	 * 词法分析
+	 * @param expression 表达式
+	 * @param functionTable 表达式涉及的函数
+	 * @return
+	 * @throws LexicalException
+	 */
 	public List<TerminalToken> analysis(String expression, Map<String, Function> functionTable) throws LexicalException {
-		
 		if(expression == null || expression.length() == 0)
 			throw new LexicalException("Invalid empty expression.");
 		
 		Scanner scanner = new Scanner(expression);
 		this.functionTable = functionTable;
-		prepareLexicalAnalyzer();
+		
 		try {
-			doAnalysis(scanner);
+			List<TerminalToken> tokens = doAnalysis(scanner);
+			return tokens;
+		} catch(LexicalException e) {
+			throw e;
 		} finally {
 			scanner.close();
 		}
-		return tokens;
-	}
-	
-	private void prepareLexicalAnalyzer() {
-		curToken = null;
-		curWord = new StringBuilder();
-		curLine = 0;
-		nextScanColumn = 0;
-		tokens = new ArrayList<TerminalToken>();
 	}
 	
 	/**
-	 * 词法分析
+	 * 执行词法分析
 	 * @return
 	 * @throws LexicalException 
 	 */
-	private void doAnalysis(Scanner scanner) throws LexicalException {
-		char[] curLineCharArray;	//字符数组用于存放当前行
-		char inputChar;
-		DFAMidState curMidState = null;		//当前到达的中间状态
-		DFAMidState nextMidsState = null;
-		DFAEndStateCode endStateCode = null;	//结束状态
+	private List<TerminalToken> doAnalysis(Scanner scanner) throws LexicalException {
+		//词法分析的结果，按序存放识别出的Token
+		List<TerminalToken> tokens = new ArrayList<TerminalToken>();
 		
+		char[] curLineCharArray;	//用于存放当前行的字符数组
+		char inputChar;	//当前读取的字符
+		
+		DFAMidState curMidState = null;		//当前到达的中间状态
+		DFAMidState nextMidsState = null;	//curMidState根据inputChar所能到达的中间状态
+		DFAEndStateCode endStateCode = null;	//结束状态代码
+		TerminalToken curToken = null;	//识别出的Token
+		curLine = 0;
 		while(scanner.hasNextLine()) {
 			curLineCharArray = nextLine(scanner).toCharArray();//读取下一行
 			curLine++;
 			nextScanColumn = 0;
+			
 			while(escapeBlank(curLineCharArray) < curLineCharArray.length) {
-				//设置当前状态到开始状态，准备识别下一个Token
-				curMidState = DFA.getDFAStartState();
-				curWord = new StringBuilder();
+				curMidState = DFA.getDFAStartState(); //设置当前状态到开始状态，准备识别下一个Token
+				curWord = curWord.delete(0, curWord.length());
 				curToken = null;
-				//识别出一个token，或者遇到词法错误时，跳出循环
-				while(true) {
+				
+				while(curToken == null) {
 					if(nextScanColumn < curLineCharArray.length) {
 						inputChar = curLineCharArray[nextScanColumn]; //取下一字符
 						nextMidsState = curMidState.getNextMidState(inputChar);
-						if(nextMidsState != null) {
-							//下一中间状态不空，追加该字符到当前Token
+						if(nextMidsState != null) {	//下一中间状态不空，追加该字符到当前Token
 							curMidState = nextMidsState;
 							curWord.append(inputChar);
 							nextScanColumn++;
 						} else {
 							endStateCode = curMidState.goToEndStateWithInput(inputChar);
-							if(endStateCode != null) {
-								//一个token识别结束（当前输入的字符不追加到curWord）
-								actAtEndState(endStateCode);
-								break;
-							} else
-								//发生词法错误
-								throw new LexicalException(curMidState, curLine, nextScanColumn);
+							if(endStateCode != null)
+								//到达结束状态，一个token识别结束（当前输入的字符不追加到curWord）
+								curToken = actAtEndState(endStateCode);
+							else 	//发生词法错误
+								throw new LexicalException(curMidState, curLine, nextScanColumn + 1);
 						}
-					} else {
+					} else if(curMidState.hasRouteToEndState()) {
 						//在行尾如果curMidState存在到结束状态的路由，说明当前Token正确结束，否则存在词法错误
-						if(curMidState.hasRouteToEndState()) {
-							actAtEndState(curMidState.getNextEndStateCode());
-						} else {
-							throw new LexicalException(curMidState, curLine, nextScanColumn);
-						}
-						break;
-					}
+						curToken = actAtEndState(curMidState.getNextEndStateCode());
+					} else
+						throw new LexicalException(curMidState, curLine, nextScanColumn + 1);
 				}
+				tokens.add(curToken);
+				checkVariableToBeAssigned(tokens);
 			}
 		}
+		return tokens;
 	}
 	
 	/**
@@ -153,9 +155,11 @@ public class LexicalAnalyzer {
 	 * @param endStateCode
 	 * @throws LexicalException 
 	 */
-	private void actAtEndState(DFAEndStateCode endStateCode) throws LexicalException {
-		String curWordText = curWord.toString();
-		int wordStartColumn = nextScanColumn - curWordText.length();
+	private TerminalToken actAtEndState(DFAEndStateCode endStateCode) throws LexicalException {
+		TerminalToken curToken = null;	//当前识别出的Token
+		String curWordText = curWord.toString();	//当前Token的字面内容
+		int wordStartColumn = nextScanColumn - curWordText.length() + 1;	//当前Token开始的列位置
+		
 		switch(endStateCode) {
 		case NUMBER_END:
 			curToken = TokenBuilder.getBuilder().line(curLine).column(wordStartColumn)
@@ -253,17 +257,13 @@ public class LexicalAnalyzer {
 							.index(DataCache.getStringIndex(str)).buildConst();
 			break;
 		}
-		if(curToken != null) {
-			//添加到Token序列
-			tokens.add((TerminalToken)curToken);
-			findVariableToBeAssigned();
-		}
+		return curToken;
 	}
 	
 	/**
 	 * 判断新识别出的token是否是被赋值的变量
 	 */
-	private void findVariableToBeAssigned() {
+	private void checkVariableToBeAssigned(List<TerminalToken> tokens) {
 		int size = tokens.size();
 		if(size < 2)
 			return;
