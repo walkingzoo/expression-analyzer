@@ -76,16 +76,22 @@ public class SyntaxAnalyzer {
 	
 	public SyntaxAnalyzer() {}
 	
-	public Valuable getFinalResult() {
-		return finalResult;
-	}
-	
+	/**
+	 * 获取所有参数
+	 * @return
+	 */
 	public Map<String, Valuable> getVariableTable() {
 		if(contextStack.isEmpty())
 			return null;
 		return contextStack.top().getVariableTable();
 	}
 	
+	/**
+	 * 解析表达式
+	 * @param tokens Token序列
+	 * @return
+	 * @throws SyntaxException
+	 */
 	public Valuable analysis(List<TerminalToken> tokens) throws SyntaxException {
 		return analysis(tokens, null);
 	}
@@ -100,8 +106,10 @@ public class SyntaxAnalyzer {
 	public Valuable analysis(List<TerminalToken> tokens, Map<String, Valuable> variableTable)
 				throws SyntaxException {
 		this.finalResult = null;
+		
 		Map<String, Valuable> initVariableTable = variableTable == null ? 
 									new HashMap<String, Valuable>() : variableTable;
+		//构造初始上下文，并压入上下文栈
 		contextStack.push(new Context(true, initVariableTable, 0));
 		
 		int index = 0;
