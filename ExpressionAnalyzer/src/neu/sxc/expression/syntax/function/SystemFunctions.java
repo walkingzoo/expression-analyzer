@@ -12,10 +12,20 @@ public class SystemFunctions {
 	
 	private static Map<String, Function> systemFunctions = new HashMap<String, Function>();
 	
+	/**
+	 * 根据函数名获取函数定义
+	 * @param functionName
+	 * @return
+	 */
 	public static Function getFunction(String functionName) {
 		return systemFunctions.get(functionName);
 	}
 	
+	/**
+	 * 判断函数是否存在
+	 * @param functionName
+	 * @return
+	 */
 	public static boolean hasFunction(String functionName) {
 		return systemFunctions.keySet().contains(functionName);
 	}
