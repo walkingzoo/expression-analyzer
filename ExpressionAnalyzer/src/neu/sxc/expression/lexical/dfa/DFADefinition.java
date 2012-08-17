@@ -8,7 +8,6 @@ import static neu.sxc.expression.lexical.LexicalConstants.*;
  *
  */
 public class DFADefinition {
-	private static DFADefinition dfa = new DFADefinition();
 	
 	private DFADefinition(){
 		initStartState();
@@ -21,7 +20,7 @@ public class DFADefinition {
 	}
 	
 	public static DFADefinition getDFA(){
-		return dfa;
+		return new DFADefinition();
 	}
 	
 	public DFAMidState getDFAStartState(){

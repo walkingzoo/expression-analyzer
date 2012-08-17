@@ -20,7 +20,6 @@ import neu.sxc.expression.tokens.VariableToken;
  *
  */
 public class Grammar {
-	private static Grammar grammar = new Grammar();
 	
 	private Grammar() {
 		start.addProduction(new TerminalToken[]{variableToBeAssigned, variable, constant, minusMark, leftBracket, function, notMark}, 
@@ -134,7 +133,7 @@ public class Grammar {
 	}
 	
 	public static Grammar getGrammar() {
-		return grammar;
+		return new Grammar();
 	}
 	
 	public NonterminalToken getStart() {
