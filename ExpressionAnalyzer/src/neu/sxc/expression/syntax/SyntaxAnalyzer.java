@@ -9,7 +9,7 @@ import neu.sxc.expression.syntax.function.Function;
 import neu.sxc.expression.syntax.operator.AssignOperator;
 import neu.sxc.expression.syntax.operator.Operator;
 import neu.sxc.expression.tokens.ConstToken;
-import neu.sxc.expression.tokens.ControlToken;
+import neu.sxc.expression.tokens.ContextOperationToken;
 import neu.sxc.expression.tokens.DataType;
 import neu.sxc.expression.tokens.DelimiterToken;
 import neu.sxc.expression.tokens.ExecutionToken;
@@ -149,10 +149,10 @@ public class SyntaxAnalyzer {
 					executable = functionTokenStack.top().getFunction();
 				execute(executable);
 				break;
-			case CONTROLLER:
+			case CONTEXT_OPERATION:
 				try {
 					//流程控制
-					controlExcution((ControlToken)syntaxStackTop);
+					contextOperate((ContextOperationToken)syntaxStackTop);
 				} catch (SyntaxException e) {
 					throw new SyntaxException(e.getMessage(), currentToken, e);
 				}
@@ -303,7 +303,7 @@ public class SyntaxAnalyzer {
 	 * @param control
 	 * @throws SyntaxException
 	 */
-	private void controlExcution(ControlToken controlToken) throws SyntaxException {
+	private void contextOperate(ContextOperationToken controlToken) throws SyntaxException {
 		switch(controlToken.getControl()) {
 		case IF_CONDITION:
 			//取if后的条件，并压入条件栈

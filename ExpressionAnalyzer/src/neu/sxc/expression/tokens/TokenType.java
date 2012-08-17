@@ -17,9 +17,9 @@ public enum TokenType {
 	EXECUTION,
 	
 	/**
-	 * 流程控制
+	 * 上下文操作
 	 */
-	CONTROLLER,
+	CONTEXT_OPERATION,
 	
 	/**
 	 * 关键字

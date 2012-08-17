@@ -13,23 +13,46 @@ import neu.sxc.expression.utils.DataCache;
  *
  */
 public class TokenBuilder {
-	
+	/**
+	 * 行号
+	 */
 	private int line = -1;
 	
+	/**
+	 * 列号
+	 */
 	private int column = -1;
 	
+	/**
+	 * 字面内容
+	 */
 	private String text;
 	
+	/**
+	 * 数据类型
+	 */
 	private DataType dataType;
 	
+	/**
+	 * 在数据缓存中的索引
+	 */
 	private int index = -1;
 	
+	/**
+	 * 函数定义
+	 */
 	private Function function;
 	
 	private Executable executable;
 	
-	private Control control;
+	/**
+	 * 上下文操作
+	 */
+	private ContextOperation contextOperation;
 	
+	/**
+	 * 是否为被赋值的变量
+	 */
 	private boolean toBeAssigned = false;
 	
 	public TokenBuilder() {}
@@ -83,13 +106,13 @@ public class TokenBuilder {
 		return index;
 	}
 	
-	public TokenBuilder control(Control val) {
-		control = val;
+	public TokenBuilder contextOperation(ContextOperation val) {
+		contextOperation = val;
 		return this;
 	}
 	
-	public Control getControl() {
-		return control;
+	public ContextOperation getControl() {
+		return contextOperation;
 	}
 	
 	public TokenBuilder function(Function val) {
@@ -127,8 +150,8 @@ public class TokenBuilder {
 		return new ExecutionToken(this);
 	}
 	
-	public ControlToken buildController() {
-		return new ControlToken(this);
+	public ContextOperationToken buildContextOperation() {
+		return new ContextOperationToken(this);
 	}
 	
 	public DelimiterToken buildDelimiter() {

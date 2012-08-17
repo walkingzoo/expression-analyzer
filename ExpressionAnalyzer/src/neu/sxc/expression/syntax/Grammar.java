@@ -2,8 +2,8 @@ package neu.sxc.expression.syntax;
 
 import neu.sxc.expression.syntax.operator.OperatorFactory;
 import neu.sxc.expression.tokens.ConstToken;
-import neu.sxc.expression.tokens.Control;
-import neu.sxc.expression.tokens.ControlToken;
+import neu.sxc.expression.tokens.ContextOperation;
+import neu.sxc.expression.tokens.ContextOperationToken;
 import neu.sxc.expression.tokens.DelimiterToken;
 import neu.sxc.expression.tokens.ExecutionToken;
 import neu.sxc.expression.tokens.FunctionToken;
@@ -228,9 +228,9 @@ public class Grammar {
 	private ExecutionToken functionExe = TokenBuilder.getBuilder().executable(null).buildExecution();//函数执行标志
 	
 	//执行流程控制
-	private ControlToken ifController = TokenBuilder.getBuilder().control(Control.IF_CONDITION).buildController();
-	private ControlToken elseController = TokenBuilder.getBuilder().control(Control.ELSE_CONDITION).buildController();
-	private ControlToken newContextController = TokenBuilder.getBuilder().control(Control.NEW_CONTEXT).buildController();
-	private ControlToken endContextController = TokenBuilder.getBuilder().control(Control.END_CONTEXT).buildController();
-	private ControlToken endIFController = TokenBuilder.getBuilder().control(Control.END_IF).buildController();
+	private ContextOperationToken ifController = TokenBuilder.getBuilder().contextOperation(ContextOperation.IF_CONDITION).buildContextOperation();
+	private ContextOperationToken elseController = TokenBuilder.getBuilder().contextOperation(ContextOperation.ELSE_CONDITION).buildContextOperation();
+	private ContextOperationToken newContextController = TokenBuilder.getBuilder().contextOperation(ContextOperation.NEW_CONTEXT).buildContextOperation();
+	private ContextOperationToken endContextController = TokenBuilder.getBuilder().contextOperation(ContextOperation.END_CONTEXT).buildContextOperation();
+	private ContextOperationToken endIFController = TokenBuilder.getBuilder().contextOperation(ContextOperation.END_IF).buildContextOperation();
 }

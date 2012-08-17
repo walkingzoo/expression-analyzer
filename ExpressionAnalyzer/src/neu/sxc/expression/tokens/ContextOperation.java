@@ -1,11 +1,11 @@
 package neu.sxc.expression.tokens;
 
 /**
- * 流程控制类型
+ * 上下文操作
  * @author shanxuecheng
  *
  */
-public enum Control {
+public enum ContextOperation {
 	/**
 	 * if条件
 	 */
