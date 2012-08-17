@@ -26,7 +26,8 @@ public class TestSyntax extends TestCase{
 	}
 	
 	public void testArithmetic() {
-		Expression expression = factory.getExpression("a = 2 / 3;");
+		Expression expression = factory.getExpression("a = a + 2 / 3;");
+		expression.setVariableValue("a", 1);
 		evaluate(expression);
 		Valuable a = expression.getVariableValue("a");
 		Printer.println(a.getNumberValue());
