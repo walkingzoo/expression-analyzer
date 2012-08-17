@@ -29,8 +29,8 @@ public class Grammar {
 								new Token[]{ifStatement});
 		
 		ifStatement.addProduction(new TerminalToken[]{ifKey}, 
-								new Token[]{ifKey, leftBracket, bolExpression, ifController, rightBracket,  
-											newContextController, block, endContextController, elseSection, endIFController, endIfKey});
+								new Token[]{ifKey, leftBracket, bolExpression, ifConditionCo, rightBracket,  
+											newContextCo, block, endContextCo, elseSection, endIFCo, endIfKey});
 		
 		block.addProduction(new TerminalToken[]{variableToBeAssigned, variable, constant, minusMark, leftBracket, function, notMark}, 
 								new Token[]{sentence, block});
@@ -40,7 +40,7 @@ public class Grammar {
 								new Token[]{});
 		
 		elseSection.addProduction(new TerminalToken[]{elseKey}, 
-								new Token[]{elseKey, elseController, newContextController, block, endContextController});
+								new Token[]{elseKey, elseConditionCo, newContextCo, block, endContextCo});
 		elseSection.addProduction(new TerminalToken[]{endIfKey}, 
 								new Token[]{});
 		
@@ -228,9 +228,9 @@ public class Grammar {
 	private ExecutionToken functionExe = TokenBuilder.getBuilder().executable(null).buildExecution();//函数执行标志
 	
 	//执行流程控制
-	private ContextOperationToken ifController = TokenBuilder.getBuilder().contextOperation(ContextOperation.IF_CONDITION).buildContextOperation();
-	private ContextOperationToken elseController = TokenBuilder.getBuilder().contextOperation(ContextOperation.ELSE_CONDITION).buildContextOperation();
-	private ContextOperationToken newContextController = TokenBuilder.getBuilder().contextOperation(ContextOperation.NEW_CONTEXT).buildContextOperation();
-	private ContextOperationToken endContextController = TokenBuilder.getBuilder().contextOperation(ContextOperation.END_CONTEXT).buildContextOperation();
-	private ContextOperationToken endIFController = TokenBuilder.getBuilder().contextOperation(ContextOperation.END_IF).buildContextOperation();
+	private ContextOperationToken ifConditionCo = TokenBuilder.getBuilder().contextOperation(ContextOperation.IF_CONDITION).buildContextOperation();
+	private ContextOperationToken elseConditionCo = TokenBuilder.getBuilder().contextOperation(ContextOperation.ELSE_CONDITION).buildContextOperation();
+	private ContextOperationToken newContextCo = TokenBuilder.getBuilder().contextOperation(ContextOperation.NEW_CONTEXT).buildContextOperation();
+	private ContextOperationToken endContextCo = TokenBuilder.getBuilder().contextOperation(ContextOperation.END_CONTEXT).buildContextOperation();
+	private ContextOperationToken endIFCo = TokenBuilder.getBuilder().contextOperation(ContextOperation.END_IF).buildContextOperation();
 }
