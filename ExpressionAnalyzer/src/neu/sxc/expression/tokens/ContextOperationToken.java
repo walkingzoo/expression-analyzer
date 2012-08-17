@@ -7,21 +7,21 @@ package neu.sxc.expression.tokens;
  */
 public class ContextOperationToken implements Token {
 	
-	ContextOperation control;
+	ContextOperation contextOperation;
 	
 	public ContextOperationToken(TokenBuilder builder) {
-		control = builder.getControl();
+		contextOperation = builder.getContextOperation();
 	}
 	
-	public ContextOperationToken(ContextOperation control) {
-		this.control = control;
+	public ContextOperationToken(ContextOperation contextOperation) {
+		this.contextOperation = contextOperation;
 	}
 
 	public TokenType getTokenType() {
 		return TokenType.CONTEXT_OPERATION;
 	}
 	
-	public ContextOperation getControl() {
-		return control;
+	public ContextOperation getContextOperation() {
+		return contextOperation;
 	}
 }

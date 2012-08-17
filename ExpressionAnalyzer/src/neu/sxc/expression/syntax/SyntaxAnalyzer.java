@@ -151,7 +151,7 @@ public class SyntaxAnalyzer {
 				break;
 			case CONTEXT_OPERATION:
 				try {
-					//流程控制
+					//上下文操作
 					contextOperate((ContextOperationToken)syntaxStackTop);
 				} catch (SyntaxException e) {
 					throw new SyntaxException(e.getMessage(), currentToken, e);
@@ -299,12 +299,12 @@ public class SyntaxAnalyzer {
 	}
 	
 	/**
-	 * 流程控制
-	 * @param control
+	 * 上下文操作
+	 * @param contextOperationToken
 	 * @throws SyntaxException
 	 */
-	private void contextOperate(ContextOperationToken controlToken) throws SyntaxException {
-		switch(controlToken.getControl()) {
+	private void contextOperate(ContextOperationToken contextOperationToken) throws SyntaxException {
+		switch(contextOperationToken.getContextOperation()) {
 		case IF_CONDITION:
 			//取if后的条件，并压入条件栈
 			Valuable condition = semanticStack.pop();

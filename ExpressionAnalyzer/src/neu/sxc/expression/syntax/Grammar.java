@@ -227,7 +227,7 @@ public class Grammar {
 	private ExecutionToken assignExe = TokenBuilder.getBuilder().executable(OperatorFactory.getOperator("ASSIGN")).buildExecution();
 	private ExecutionToken functionExe = TokenBuilder.getBuilder().executable(null).buildExecution();//函数执行标志
 	
-	//执行流程控制
+	//上下文操作符号
 	private ContextOperationToken ifConditionCo = TokenBuilder.getBuilder().contextOperation(ContextOperation.IF_CONDITION).buildContextOperation();
 	private ContextOperationToken elseConditionCo = TokenBuilder.getBuilder().contextOperation(ContextOperation.ELSE_CONDITION).buildContextOperation();
 	private ContextOperationToken newContextCo = TokenBuilder.getBuilder().contextOperation(ContextOperation.NEW_CONTEXT).buildContextOperation();

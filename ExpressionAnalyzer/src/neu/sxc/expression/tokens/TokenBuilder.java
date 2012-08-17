@@ -111,7 +111,7 @@ public class TokenBuilder {
 		return this;
 	}
 	
-	public ContextOperation getControl() {
+	public ContextOperation getContextOperation() {
 		return contextOperation;
 	}
 	
