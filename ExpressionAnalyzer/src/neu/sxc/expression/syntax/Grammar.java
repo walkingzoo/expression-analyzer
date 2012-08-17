@@ -1,6 +1,5 @@
 package neu.sxc.expression.syntax;
 
-import neu.sxc.expression.syntax.function.FunctionRunner;
 import neu.sxc.expression.syntax.operator.OperatorFactory;
 import neu.sxc.expression.tokens.ConstToken;
 import neu.sxc.expression.tokens.Control;
@@ -226,7 +225,7 @@ public class Grammar {
 	private ExecutionToken equalExe = TokenBuilder.getBuilder().executable(OperatorFactory.getOperator("EQUAL")).buildExecution();
 	private ExecutionToken notEqualExe = TokenBuilder.getBuilder().executable(OperatorFactory.getOperator("NOTEQUAL")).buildExecution();
 	private ExecutionToken assignExe = TokenBuilder.getBuilder().executable(OperatorFactory.getOperator("ASSIGN")).buildExecution();
-	private ExecutionToken functionExe = TokenBuilder.getBuilder().executable(new FunctionRunner()).buildExecution();
+	private ExecutionToken functionExe = TokenBuilder.getBuilder().executable(null).buildExecution();//函数执行标志
 	
 	//执行流程控制
 	private ControlToken ifController = TokenBuilder.getBuilder().control(Control.IF_CONDITION).buildController();

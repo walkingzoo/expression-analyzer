@@ -125,6 +125,7 @@ public class Expression {
 	 * @throws LexicalException
 	 */
 	public Set<String> getVariableNames() throws LexicalException {
+		//词法分析，获得Token序列
 		tokens = lexicalAnalyzer.analysis(expression, functionTable);
 		Set<String> variableNames = new HashSet<String>();
 		for(TerminalToken terminalToken : tokens)
@@ -191,8 +192,13 @@ public class Expression {
 	 * @throws SyntaxException 语法错误异常
 	 */
 	public Valuable evaluate() throws LexicalException, SyntaxException {
+		//词法分析，获得Token序列
 		tokens = lexicalAnalyzer.analysis(expression, functionTable);
+		
+		//语法分析，返回最终结果
 		finalResult = syntaxAnalyzer.analysis(tokens, variableTable);
+		//更新变量值
+		variableTable = syntaxAnalyzer.getVariableTable();
 		return finalResult;
 	}
 	

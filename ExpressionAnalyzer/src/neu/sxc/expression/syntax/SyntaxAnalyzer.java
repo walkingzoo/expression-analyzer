@@ -5,11 +5,10 @@ import java.util.List;
 import java.util.Map;
 
 import neu.sxc.expression.lexical.LexicalConstants;
-import neu.sxc.expression.syntax.function.FunctionRunner;
+import neu.sxc.expression.syntax.function.Function;
 import neu.sxc.expression.syntax.operator.AssignOperator;
 import neu.sxc.expression.syntax.operator.Operator;
 import neu.sxc.expression.tokens.ConstToken;
-import neu.sxc.expression.tokens.Control;
 import neu.sxc.expression.tokens.ControlToken;
 import neu.sxc.expression.tokens.DataType;
 import neu.sxc.expression.tokens.DelimiterToken;
@@ -55,7 +54,7 @@ public class SyntaxAnalyzer {
 	private Stack<DelimiterToken> operatorTokenStack = new Stack<DelimiterToken>();
 	
 	/**
-	 * 函数栈
+	 * 函数符号栈
 	 */
 	private Stack<FunctionToken> functionTokenStack = new Stack<FunctionToken>();
 	
@@ -82,7 +81,7 @@ public class SyntaxAnalyzer {
 	 */
 	public Map<String, Valuable> getVariableTable() {
 		if(contextStack.isEmpty())
-			return null;
+			return new HashMap<String, Valuable>();
 		return contextStack.top().getVariableTable();
 	}
 	
@@ -99,7 +98,7 @@ public class SyntaxAnalyzer {
 	/**
 	 * 解析表达式
 	 * @param tokens Token序列
-	 * @param variableTable 变量表
+	 * @param variableTable 初始变量值
 	 * @return
 	 * @throws SyntaxException
 	 */
@@ -107,9 +106,9 @@ public class SyntaxAnalyzer {
 				throws SyntaxException {
 		this.finalResult = null;
 		
-		Map<String, Valuable> initVariableTable = variableTable == null ? 
-									new HashMap<String, Valuable>() : variableTable;
 		//构造初始上下文，并压入上下文栈
+		Map<String, Valuable> initVariableTable = new HashMap<String, Valuable>();
+		initVariableTable.putAll(variableTable);
 		contextStack.push(new Context(true, initVariableTable, 0));
 		
 		int index = 0;
@@ -130,51 +129,47 @@ public class SyntaxAnalyzer {
 	 */
 	private int analysisSentence(List<TerminalToken> tokens, int index)
 				throws SyntaxException {
-		prepareStacks();
-		syntaxStack.push(grammar.getStart());
+		clearStacks();
+		syntaxStack.push(grammar.getStart());//压入文法开始符号，开始解析一条语句
 		TerminalToken currentToken = tokens.get(index++);
 		Token syntaxStackTop = null;
 		while(!syntaxStack.isEmpty()) {//栈空时一条语句分析结束
 			syntaxStackTop = syntaxStack.pop();
 			switch(syntaxStackTop.getTokenType()) {
-			case NT:
-				//遇到非终结符时，查找产生式
+			case NT: //语法栈顶为非终结符时，查找产生式
 				Token[] production = ((NonterminalToken)syntaxStackTop).getProduction(currentToken);
 				if(production != null)
 					reverseProductionIntoSyntaxStack(production);
-				else 
+				else //找不到对应的产生式，存在语法错误
 					throw new SyntaxException(currentToken);
 				break;
 			case EXECUTION:
-				ExecutionToken executionToken = (ExecutionToken)syntaxStackTop;
-				Executable executable = executionToken.getExecutable();
-				if(executable instanceof Operator) {
-					//执行操作符
-					executeOperator((Operator)executable);
-				} else {
-					//执行函数
-					executeFunction((FunctionRunner)executable);
-				}
+				Executable executable = ((ExecutionToken)syntaxStackTop).getExecutable();
+				if(executable == null) //需要执行的是函数，从函数符号栈取出函数定义
+					executable = functionTokenStack.top().getFunction();
+				execute(executable);
 				break;
 			case CONTROLLER:
-				ControlToken controlToken = (ControlToken)syntaxStackTop;
 				try {
 					//流程控制
-					controlExcution(controlToken.getControl());
+					controlExcution((ControlToken)syntaxStackTop);
 				} catch (SyntaxException e) {
 					throw new SyntaxException(e.getMessage(), currentToken, e);
 				}
 				break;
-			default:
-				//匹配终结符
-				if(matchTerminalToken((TerminalToken)syntaxStackTop, currentToken)
-						&& !syntaxStack.isEmpty()) {
-					if(index < tokens.size())
-						currentToken = tokens.get(index++);
-					else 
-						throw new SyntaxException("Sentence is not properly over at line:"
-								+ currentToken.getLine() + ".");
-				}
+			default: //语法栈顶为终结符，检查是否匹配
+				if(currentToken.equalsInGrammar((TerminalToken)syntaxStackTop)) {
+					dealTerminalToken(currentToken);
+					//语法栈不空，取后续Token继续解析
+					if(!syntaxStack.isEmpty()) {
+						if(index < tokens.size())
+							currentToken = tokens.get(index++);
+						else 	//没有后续Token，说明语句未正确结束
+							throw new SyntaxException("Sentence is not properly over at line:"
+									+ currentToken.getLine() + ".");
+					}
+				} else	//终结符未匹配，存在语法错误
+					throw new SyntaxException(currentToken);
 				break;
 			}
 		}
@@ -185,43 +180,27 @@ public class SyntaxAnalyzer {
 		return index;
 	}
 	
-	/**
-	 * 判断终结符是否匹配
-	 * @param syntaxStackTop
-	 * @param currentToken
-	 * @return
-	 * @throws SyntaxException
-	 */
-	private boolean matchTerminalToken(TerminalToken syntaxStackTop, TerminalToken currentToken)
-							throws SyntaxException {
-		boolean currentTokenMatched = syntaxStackTop.equalsInGrammar(currentToken);
-		if(currentTokenMatched) {
-			switch(syntaxStackTop.getTokenType()) {
-			case CONST:
-				semanticStack.push((ConstToken)currentToken);
-				break;
-			case VARIABLE:
-				VariableToken variable = (VariableToken)currentToken;
-				Valuable valueOfVariable = getVariableValue(variable.getText());
-				if(valueOfVariable != null)
-					variable.assignWith(valueOfVariable);
-				semanticStack.push(variable);
-				break;
-			case DELIMITER:
-				if(LexicalConstants.OPERATORS.contains(currentToken.getText()))
-					operatorTokenStack.push((DelimiterToken)currentToken);
-				break;
-			case FUNCTION:
-				functionTokenStack.push((FunctionToken)currentToken);
-				argumentStartIndexStack.push(semanticStack.size());
-				break;
-			case KEY:
-				break;
-			}
-		} else {
-			throw new SyntaxException(currentToken);
+	private void dealTerminalToken(TerminalToken currentToken) {
+		switch(currentToken.getTokenType()) {
+		case CONST:	//常量压入语义栈
+			semanticStack.push((ConstToken)currentToken);
+			break;
+		case VARIABLE:	//变量设值后压入语义栈
+			VariableToken variable = (VariableToken)currentToken;
+			Valuable valueOfVariable = getVariableValue(variable.getText());
+			if(valueOfVariable != null)
+				variable.assignWith(valueOfVariable);
+			semanticStack.push(variable);
+			break;
+		case DELIMITER:
+			if(LexicalConstants.OPERATORS.contains(currentToken.getText()))
+				operatorTokenStack.push((DelimiterToken)currentToken);
+			break;
+		case FUNCTION:
+			functionTokenStack.push((FunctionToken)currentToken);	//压入函数栈
+			argumentStartIndexStack.push(semanticStack.size());		//压入函数参数在语义栈中的起始位置
+			break;
 		}
-		return currentTokenMatched;
 	}
 	
 	/**
@@ -234,29 +213,39 @@ public class SyntaxAnalyzer {
 				syntaxStack.push(production[i]);
 	}
 	
+	private void execute(Executable executable) {
+		Valuable[] arguments = getArguments(executable);
+		Valuable result = null;
+		if(executable instanceof Operator)
+			result = executeOperator((Operator)executable, arguments);
+		else if(executable instanceof Function)
+			result = executeFunction((Function)executable, arguments);
+		//结果压入语义栈
+		semanticStack.push(result);
+	}
+	
 	/**
 	 * 执行操作符
-	 * @param operator
-	 * @throws VariableNotInitializedException
-	 * @throws ArgumentsMismatchException
+	 * @param operator 操作符定义
+	 * @param arguments 参数
+	 * @return
 	 */
-	private void executeOperator(Operator operator) 
-				throws VariableNotInitializedException, ArgumentsMismatchException {
-		Valuable[] arguments = getArgumentsForOperator(operator);
+	private Valuable executeOperator(Operator operator, Valuable[] arguments) {
+		//弹出操作符，如果发生错误，记录错误位置
 		DelimiterToken operatorToken = operatorTokenStack.pop();
 		try {
 			Valuable result = operator.execute(arguments);
+			//如果是赋值操作，则需要更新被赋值变量到variableTable
 			if(operator instanceof AssignOperator){
 				VariableToken variable = (VariableToken)arguments[0];
 				setVariableValue(variable.getText(), result);
 			}
-			semanticStack.push(result);
+			return result;
 		} catch(ArgumentsMismatchException e) {
 			throw new ArgumentsMismatchException(e.getMessage(), operatorToken, e);
 		} catch(ArithmeticException e) {
 			ArithmeticException arithmeticException = new ArithmeticException(e.getMessage()
-					+ " At line:" + operatorToken.getLine() 
-					+ ", column:" + operatorToken.getColumn() + ".");
+					+ " At line:" + operatorToken.getLine() + ", column:" + operatorToken.getColumn() + ".");
 			arithmeticException.initCause(e);
 			throw arithmeticException;
 		}
@@ -264,49 +253,43 @@ public class SyntaxAnalyzer {
 	
 	/**
 	 * 执行函数
-	 * @param functionRunner
-	 * @throws VariableNotInitializedException
-	 * @throws ArgumentsMismatchException
+	 * @param function 函数定义
+	 * @param arguments 参数
+	 * @return
 	 */
-	private void executeFunction(FunctionRunner functionRunner) 
-				throws VariableNotInitializedException, ArgumentsMismatchException {
+	private Valuable executeFunction(Function function, Valuable[] arguments) {
+		//弹出函数符号，如果发生错误，记录错误位置
 		FunctionToken functionToken = functionTokenStack.pop();
-		functionRunner.setFunction(functionToken.getFunction());
-		int argumentNum = semanticStack.size() - argumentStartIndexStack.pop();
-		Valuable[] arguments = getArgumentsForFunction(argumentNum);
 		try {
-			Valuable result = functionRunner.execute(arguments);
-			semanticStack.push(result);
+			Valuable result = function.execute(arguments);
+			return result;
 		} catch(ArgumentsMismatchException e) {
 			throw new ArgumentsMismatchException(e.getMessage(), functionToken, e);
 		}
 	}
-	
-	private Valuable[] getArgumentsForOperator(Operator operator) 
-					throws VariableNotInitializedException {
-		return getArguments(operator.getArgumentNum(), operator instanceof AssignOperator);
-	}
-	
-	private Valuable[] getArgumentsForFunction(int argumentNum) 
-					throws VariableNotInitializedException {
-		return getArguments(argumentNum, false);
-	}
-	
+
 	/**
-	 * 获取参数（操作符和函数）
-	 * @param argumentNum
-	 * @param isForAssignment
-	 * @return
-	 * @throws VariableNotInitializedException
+	 * 获取参数
+	 * @param executable 操作
+	 * @return 参数数组
 	 */
-	private Valuable[] getArguments(int argumentNum, boolean isForAssignment)
-					throws VariableNotInitializedException {
+	private Valuable[] getArguments(Executable executable) {
+		int argumentNum = 0; //参数个数
+		boolean isAssignOperator = false;//是否为赋值操作
+		
+		if(executable instanceof Operator) {
+			argumentNum = ((Operator)executable).getArgumentNum();
+			isAssignOperator = executable instanceof AssignOperator;
+		} else if(executable instanceof Function) {
+			//参数个数为当前语义栈大小减去参数起始位置
+			argumentNum = semanticStack.size() - argumentStartIndexStack.pop();
+		}
 		Valuable[] arguments = new Valuable[argumentNum];
 		for(int i=argumentNum-1; i>=0; i--) {
 			arguments[i] = semanticStack.pop();
 			if(arguments[i].getTokenType() == TokenType.VARIABLE) {
 				//如果参数是变量，则检查变量是否已定义，赋值操作中被赋值变量除外
-				if(isForAssignment && i == 0)
+				if(isAssignOperator && i == 0)
 					break;
 				else if(arguments[i].getIndex() < 0) 
 					throw new VariableNotInitializedException((VariableToken)arguments[i]);
@@ -320,8 +303,8 @@ public class SyntaxAnalyzer {
 	 * @param control
 	 * @throws SyntaxException
 	 */
-	private void controlExcution(Control control) throws SyntaxException {
-		switch(control) {
+	private void controlExcution(ControlToken controlToken) throws SyntaxException {
+		switch(controlToken.getControl()) {
 		case IF_CONDITION:
 			//取if后的条件，并压入条件栈
 			Valuable condition = semanticStack.pop();
@@ -380,7 +363,7 @@ public class SyntaxAnalyzer {
 			semanticStack.pop();
 	}
 	
-	private void prepareStacks() {
+	private void clearStacks() {
 		syntaxStack.clear();
 		semanticStack.clear();
 		operatorTokenStack.clear();
