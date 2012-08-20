@@ -198,7 +198,7 @@ public class SyntaxAnalyzer {
 			break;
 		case FUNCTION:
 			functionTokenStack.push((FunctionToken)currentToken);	//压入函数栈
-			argumentStartIndexStack.push(semanticStack.size());		//压入函数参数在语义栈中的起始位置
+			argumentStartIndexStack.push(semanticStack.size());	//压入函数参数在语义栈中的起始位置
 			break;
 		}
 	}
