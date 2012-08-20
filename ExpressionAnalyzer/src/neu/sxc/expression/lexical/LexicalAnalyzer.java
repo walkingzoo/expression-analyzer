@@ -287,6 +287,8 @@ public class LexicalAnalyzer {
 	private String nextLine(Scanner scanner){
 		String nextLine = scanner.nextLine();
 		//仅支持行注释，注释以##开头
+		if(nextLine.indexOf("##") < 0)
+			return nextLine;
 		Pattern commentPattern = Pattern.compile("##.*");
 		Matcher matcher = commentPattern.matcher(nextLine);
 		return matcher.replaceFirst("");
