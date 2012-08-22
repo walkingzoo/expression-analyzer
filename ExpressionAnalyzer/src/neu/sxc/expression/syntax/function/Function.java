@@ -19,7 +19,7 @@ public abstract class Function implements Executable{
 	private final String functionName = getName();
 	
 	/**
-	 * 参数类型
+	 * 参数类型数组
 	 */
 	private final DataType[] argumentsDataType = getArgumentsDataType() == null ? new DataType[0] : getArgumentsDataType();
 	
@@ -30,7 +30,7 @@ public abstract class Function implements Executable{
 	public abstract String getName();
 	
 	/**
-	 * 返回函数参数类型，当参数个数不限时，所有参数类型必须相同，本方法须提供一个参数类型
+	 * 返回函数参数类型数组，当参数个数不限时，所有参数类型必须相同，本方法须提供一个参数类型
 	 * @return
 	 */
 	public abstract DataType[] getArgumentsDataType();
