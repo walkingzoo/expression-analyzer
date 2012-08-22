@@ -5,12 +5,19 @@ import neu.sxc.expression.tokens.Valuable;
 
 public class Abs extends Function {
 
-	public Abs() {
-		super("abs", new DataType[]{DataType.NUMBER});
+	@Override
+	public String getName() {
+		return "abs";
 	}
-
+	
+	@Override
 	public int getArgumentNum() {
 		return 1;
+	}
+	
+	@Override
+	public DataType[] getArgumentsDataType() {
+		return new DataType[]{DataType.NUMBER};
 	}
 
 	@Override
@@ -18,5 +25,6 @@ public class Abs extends Function {
 		Valuable argument = arguments[0];
 		return argument.getNumberValue().abs();
 	}
+
 
 }

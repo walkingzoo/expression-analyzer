@@ -16,28 +16,29 @@ public abstract class Function implements Executable{
 	/**
 	 * 函数名
 	 */
-	private final String functionName;
+	private final String functionName = getName();
 	
 	/**
 	 * 参数类型
 	 */
-	private final DataType[] argumentsDataType;
+	private final DataType[] argumentsDataType = getArgumentsDataType() == null ? new DataType[0] : getArgumentsDataType();
 	
-	public Function(String functionName) {
-		this.functionName = functionName;
-		this.argumentsDataType = new DataType[0];
-		checkFunctionDefinition();
-	}
+	/**
+	 * 返回函数名
+	 * @return
+	 */
+	public abstract String getName();
 	
-	public Function(String functionName, DataType[] argumentsDataType) {
-		this.functionName = functionName;
-		this.argumentsDataType = argumentsDataType;
-		checkFunctionDefinition();
-	}
+	/**
+	 * 返回函数参数类型，当参数个数不限时，所有参数类型必须相同，本方法须提供一个参数类型
+	 * @return
+	 */
+	public abstract DataType[] getArgumentsDataType();
 	
-	public String getName() {
-		return functionName;
-	}
+	/**
+	 * 返回函数参数个数，参数个数小于0时，表示参数个数不限
+	 */
+	public abstract int getArgumentNum();
 	
 	/**
 	 * 执行函数
@@ -79,12 +80,16 @@ public abstract class Function implements Executable{
 	/**
 	 * 检查函数定义
 	 */
-	private void checkFunctionDefinition() {
+	public final void checkFunctionDefinition() {
+		if(functionName == null || "".equals(functionName))
+			throw new RuntimeException("Function name can not be empty.");
+		
 		if(getArgumentNum() >= 0) {
 			if(argumentsDataType.length != getArgumentNum()) {
 				throw new RuntimeException("Function definition error:" + getName() + ".");
 			}
 		} else {
+			//参数个数小于0，即个数不限时，需要提供一个参数类型，所有参数类型必须相同
 			if(argumentsDataType.length != 1) {
 				throw new RuntimeException("Function definition error:" + getName() + ".");
 			}

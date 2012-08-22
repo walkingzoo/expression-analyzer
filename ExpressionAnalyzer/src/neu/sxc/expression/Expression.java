@@ -166,6 +166,7 @@ public class Expression {
 	 * @param function
 	 */
 	public void addFunction(Function function) {
+		function.checkFunctionDefinition();
 		functionTable.put(function.getName(), function);
 	}
 	

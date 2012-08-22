@@ -5,13 +5,9 @@ import java.math.BigDecimal;
 import neu.sxc.expression.tokens.DataType;
 import neu.sxc.expression.tokens.Valuable;
 
-
 public class Max extends Function {
 
-	public Max() {
-		super("max", new DataType[]{DataType.NUMBER});
-	}
-
+	@Override
 	public int getArgumentNum() {
 		return -1;
 	}
@@ -28,5 +24,15 @@ public class Max extends Function {
 					result = arguments[i].getNumberValue();
 		}
 		return result;
+	}
+
+	@Override
+	public String getName() {
+		return "max";
+	}
+
+	@Override
+	public DataType[] getArgumentsDataType() {
+		return new DataType[]{DataType.NUMBER};
 	}
 }

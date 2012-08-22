@@ -30,7 +30,12 @@ public class SystemFunctions {
 		return systemFunctions.keySet().contains(functionName);
 	}
 	
+	/**
+	 * 添加函数
+	 * @param function
+	 */
 	private static void registerFunction(Function function) {
+		function.checkFunctionDefinition();
 		systemFunctions.put(function.getName(), function);
 	}
 	
