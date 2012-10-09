@@ -26,10 +26,10 @@ public class TestSyntax extends TestCase{
 	}
 	
 	public void testArithmetic() {
-		Expression expression = factory.getExpression("a = a + 2 / 3;");
-		expression.setVariableValue("a", 1);
+		Expression expression = factory.getExpression("a=1;b=a+1;");
+//		expression.setVariableValue("a", 1);
 		evaluate(expression);
-		Valuable a = expression.getVariableValue("a");
+		Valuable a = expression.getVariableValue("b");
 		Printer.println(a.getNumberValue());
 	}
 	
