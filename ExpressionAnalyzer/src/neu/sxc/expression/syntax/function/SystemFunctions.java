@@ -34,7 +34,7 @@ public class SystemFunctions {
 	 * 添加函数
 	 * @param function
 	 */
-	private static void registerFunction(Function function) {
+	public static void registerFunction(Function function) {
 		function.checkFunctionDefinition();
 		systemFunctions.put(function.getName(), function);
 	}
