@@ -39,6 +39,14 @@ public class SystemFunctions {
 		systemFunctions.put(function.getName(), function);
 	}
 	
+	/**
+	 * 移除函数
+	 * @param function
+	 */
+	public static void removeFunction(Function function) {
+		systemFunctions.remove(function.getName());
+	}
+	
 	static {
 		registerFunction(new Max());
 		registerFunction(new Abs());
