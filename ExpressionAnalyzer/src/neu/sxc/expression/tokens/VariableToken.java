@@ -28,9 +28,9 @@ public final class VariableToken extends ValueToken {
 		return TokenType.VARIABLE;
 	}
 	
-	public void assignWith(Valuable value) {
-		setDataType(value.getDataType());
-		setIndex(value.getIndex());
+	public void assignWith(Valuable valuable) {
+		setDataType(valuable.getDataType());
+		setValue(valuable.getValue());
 	}
 
 	@Override

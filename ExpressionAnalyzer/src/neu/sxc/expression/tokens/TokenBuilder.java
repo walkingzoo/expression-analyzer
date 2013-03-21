@@ -5,7 +5,6 @@ import java.util.Calendar;
 
 import neu.sxc.expression.syntax.Executable;
 import neu.sxc.expression.syntax.function.Function;
-import neu.sxc.expression.utils.DataCache;
 
 /**
  * 创建token
@@ -34,9 +33,9 @@ public class TokenBuilder {
 	private DataType dataType;
 	
 	/**
-	 * 在数据缓存中的索引
+	 * 值
 	 */
-	private int index = -1;
+	private Object value;
 	
 	/**
 	 * 函数定义
@@ -96,14 +95,14 @@ public class TokenBuilder {
 	public DataType getDataType() {
 		return dataType;
 	}
-	
-	public TokenBuilder index(int val) {
-		index = val;
+
+	public TokenBuilder value(Object val) {
+		value = val;
 		return this;
 	}
 	
-	public int getIndex() {
-		return index;
+	public Object getValue() {
+		return value;
 	}
 	
 	public TokenBuilder contextOperation(ContextOperation val) {
@@ -184,32 +183,25 @@ public class TokenBuilder {
 			throw new RuntimeException("Ilegal value : null");
 		} else if(value instanceof Integer) {
 			runtimeValue = getBuilder().dataType(DataType.NUMBER)
-							.index(DataCache.getBigDecimalIndex( new BigDecimal((Integer)value)) )
-							.buildRuntimeValue();
+							.value(new BigDecimal((Integer)value)).buildRuntimeValue();
 		} else if (value instanceof Double) {
 			runtimeValue = getBuilder().dataType(DataType.NUMBER)
-							.index(DataCache.getBigDecimalIndex( BigDecimal.valueOf((Double)value)) )
-							.buildRuntimeValue();
+							.value(BigDecimal.valueOf((Double)value)).buildRuntimeValue();
 		} else if (value instanceof BigDecimal) {
 			runtimeValue = getBuilder().dataType(DataType.NUMBER)
-							.index(DataCache.getBigDecimalIndex((BigDecimal)value))
-							.buildRuntimeValue();
+							.value((BigDecimal)value).buildRuntimeValue();
 		} else if (value instanceof String) {
 			runtimeValue = getBuilder().dataType(DataType.STRING)
-							.index(DataCache.getStringIndex((String)value))
-							.buildRuntimeValue();
+							.value((String)value).buildRuntimeValue();
 		} else if (value instanceof Character) {
 			runtimeValue = getBuilder().dataType(DataType.CHARACTER)
-							.index(DataCache.getCharIndex((Character)value))
-							.buildRuntimeValue();
+							.value((Character)value).buildRuntimeValue();
 		} else if(value instanceof Boolean) {
 			runtimeValue = getBuilder().dataType(DataType.BOOLEAN)
-							.index(DataCache.getBooleanIndex((Boolean)value))
-							.buildRuntimeValue();
+							.value((Boolean)value).buildRuntimeValue();
 		} else if (value instanceof Calendar) {
 			runtimeValue = getBuilder().dataType(DataType.DATE)
-							.index(DataCache.getDateIndex((Calendar)value))
-							.buildRuntimeValue();
+							.value((Calendar)value).buildRuntimeValue();
 		} else
 			throw new RuntimeException("Ilegal value : " + value);
 		return runtimeValue;

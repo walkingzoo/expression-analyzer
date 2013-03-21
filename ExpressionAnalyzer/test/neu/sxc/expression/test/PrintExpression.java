@@ -9,13 +9,10 @@ import neu.sxc.expression.tokens.TerminalToken;
 import neu.sxc.expression.tokens.Token;
 import neu.sxc.expression.tokens.Valuable;
 import neu.sxc.expression.tokens.ValueToken;
-import neu.sxc.expression.utils.DataCache;
 
 
 public class PrintExpression {
 	public static void printExp(Expression exp) {
-		
-		printDatas();
 		
 		printTokens(exp.getTokens());
 		
@@ -33,10 +30,6 @@ public class PrintExpression {
 		}
 	}
 	
-	public static void printDatas() {
-		DataCache.print();
-	}
-	
 	public static void printTokens(List<TerminalToken> tokens) {
 		if(tokens.size() > 0) {
 			Printer.println("----------Tokens-----------");
@@ -52,22 +45,22 @@ public class PrintExpression {
 			ValueToken constToken = (ValueToken)token;
 			Printer.print(", DateType:" + constToken.getDataType().name());
 			Printer.println(", line:" + constToken.getLine() + ", column:" + constToken.getColumn() + ", text: " + constToken.getText()
-					+ ", index: " + constToken.getIndex());
+					+ ", value: " + constToken.getValue());
 			break;
 		case VARIABLE:
 			ValueToken variableToken = (ValueToken)token;
 			if(variableToken.getDataType() != null)
 				Printer.print(", DateType:" + variableToken.getDataType().name());
 			Printer.print(", line:" + variableToken.getLine() + ", column:" + variableToken.getColumn() + ", text: " + variableToken.getText());
-			if(variableToken.getIndex() >= 0)
-				Printer.println(", index: " + variableToken.getIndex());
+			if(variableToken.getValue() != null)
+				Printer.println(", index: " + variableToken.getValue());
 			else
 				Printer.println();
 			break;
 		case RUNTIME_VALUE:
 			RuntimeValue resultToken = (RuntimeValue)token;
 			Printer.print(", DateType:" + resultToken.getDataType().name());
-			Printer.print(", index: " + resultToken.getIndex());
+			Printer.print(", value: " + resultToken.getValue());
 			Printer.println();
 			break;
 		default:

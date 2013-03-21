@@ -18,21 +18,17 @@ public final class RuntimeValue implements Valuable {
 	private DataType dataType;
 	
 	/**
-	 * 在数据缓存中的索引
+	 * 值
 	 */
-	private int index;
+	private Object value;
 	
 	public RuntimeValue(TokenBuilder builder) {
 		dataType = builder.getDataType();
-		index = builder.getIndex();
+		value = builder.getValue();
 	}
 	
 	public DataType getDataType() {
 		return dataType;
-	}
-	
-	public int getIndex() {
-		return index;
 	}
 	
 	public TokenType getTokenType() {
@@ -60,7 +56,6 @@ public final class RuntimeValue implements Valuable {
 	}
 	
 	public Object getValue() {
-		return ValueUtil.getValue(this);
+		return value;
 	}
-
 }

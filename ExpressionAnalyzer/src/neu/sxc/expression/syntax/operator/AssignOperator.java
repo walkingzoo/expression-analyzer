@@ -16,7 +16,7 @@ public class AssignOperator extends BinaryOperator {
 		VariableToken variable = (VariableToken) arguments[0];
 		Valuable value = arguments[1];
 		//若变量未定义，直接赋值，若已定义，则先判断数据类型是否匹配再赋值
-		if (variable.getIndex() < 0) {
+		if (variable.getValue() == null) {
 			variable.assignWith(value);
 		} else if (variable.getDataType() == value.getDataType()) {
 			variable.assignWith(value);

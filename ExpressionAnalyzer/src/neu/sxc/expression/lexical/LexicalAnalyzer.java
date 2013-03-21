@@ -23,7 +23,6 @@ import neu.sxc.expression.tokens.DataType;
 import neu.sxc.expression.tokens.TerminalToken;
 import neu.sxc.expression.tokens.TokenBuilder;
 import neu.sxc.expression.tokens.VariableToken;
-import neu.sxc.expression.utils.DataCache;
 import neu.sxc.expression.utils.ExpressionUtil;
 
 /**
@@ -164,7 +163,7 @@ public class LexicalAnalyzer {
 		case NUMBER_END:
 			curToken = TokenBuilder.getBuilder().line(curLine).column(wordStartColumn)
 							.text(curWordText).dataType(DataType.NUMBER)
-							.index(DataCache.getBigDecimalIndex(new BigDecimal(curWordText)))
+							.value(new BigDecimal(curWordText))
 							.buildConst();
 			break;
 		case ID_END:
@@ -174,7 +173,7 @@ public class LexicalAnalyzer {
 				//识别布尔常量
 				curToken = TokenBuilder.getBuilder().line(curLine).column(wordStartColumn)
 								.text(curWordText).dataType(DataType.BOOLEAN)
-								.index(DataCache.getBooleanIndex(Boolean.valueOf(curWordText)))
+								.value(Boolean.valueOf(curWordText))
 								.buildConst();
 			} else if(KEY_WORDS.contains(curWordText)) { //识别关键字
 				curToken = TokenBuilder.getBuilder().line(curLine).column(wordStartColumn)
@@ -230,7 +229,7 @@ public class LexicalAnalyzer {
 				if(date != null)
 					curToken = TokenBuilder.getBuilder().line(curLine).column(wordStartColumn)
 									.text(curWordText).dataType(DataType.DATE)
-									.index(DataCache.getDateIndex(date)).buildConst();
+									.value(date).buildConst();
 			} catch (ParseException e) {
 				throw new LexicalException("Wrong date format, please input as [yyyy-MM-dd] or [yyyy-MM-dd HH:mm:ss].",
 						curLine, wordStartColumn);
@@ -244,14 +243,14 @@ public class LexicalAnalyzer {
 				ch = ExpressionUtil.getEscapedChar(curWordText.toCharArray()[2]);
 			curToken = TokenBuilder.getBuilder().line(curLine).column(wordStartColumn)
 							.text(curWordText).dataType(DataType.CHARACTER)
-							.index(DataCache.getCharIndex(ch)).buildConst();
+							.value(ch).buildConst();
 			break;
 		case STRING_END:
 			String str = curWordText.substring(1, curWordText.length()-1);
 			str = ExpressionUtil.transformEscapesInString(str);
 			curToken = TokenBuilder.getBuilder().line(curLine).column(wordStartColumn)
 							.text(curWordText).dataType(DataType.STRING)
-							.index(DataCache.getStringIndex(str)).buildConst();
+							.value(str).buildConst();
 			break;
 		}
 		return curToken;

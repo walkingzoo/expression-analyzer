@@ -27,10 +27,10 @@ public class TestSyntax extends TestCase{
 	
 	public void testArithmetic() {
 		Expression expression = factory.getExpression("a=1;b=a+1;");
-//		expression.setVariableValue("a", 1);
+//		expression.setVariableValue("a", 2);
 		evaluate(expression);
-		Valuable a = expression.getVariableValue("b");
-		Printer.println(a.getNumberValue());
+		Valuable b = expression.getVariableValue("b");
+		Printer.println(b.getNumberValue());
 	}
 	
 	public void testCompare() {
@@ -58,7 +58,7 @@ public class TestSyntax extends TestCase{
 	private void evaluate(Expression expression) {
 		try {
 			Printer.println(System.currentTimeMillis());
-			expression.evaluate();
+			expression.reParseAndEvaluate();
 			Printer.println(System.currentTimeMillis());
 		} catch (LexicalException e) {
 			e.printStackTrace();

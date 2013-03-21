@@ -16,12 +16,6 @@ public interface Valuable extends Token {
 	public DataType getDataType();
 	
 	/**
-	 * 在数据缓存中的索引
-	 * @return
-	 */
-	public int getIndex();
-	
-	/**
 	 * 取数值
 	 * @return
 	 */

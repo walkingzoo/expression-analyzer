@@ -291,7 +291,7 @@ public class SyntaxAnalyzer {
 				//如果参数是变量，则检查变量是否已定义，赋值操作中被赋值变量除外
 				if(isAssignOperator && i == 0)
 					break;
-				else if(arguments[i].getIndex() < 0) 
+				else if(arguments[i].getValue() == null) 
 					throw new VariableNotInitializedException((VariableToken)arguments[i]);
 			}
 		}

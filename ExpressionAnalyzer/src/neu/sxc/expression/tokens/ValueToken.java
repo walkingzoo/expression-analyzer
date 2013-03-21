@@ -18,14 +18,14 @@ public abstract class ValueToken extends TerminalToken implements Valuable {
 	private DataType dataType;
 	
 	/**
-	 * 在数据缓存中的索引
+	 * 值
 	 */
-	private int index;
+	private Object value;
 	
 	public ValueToken(TokenBuilder builder) {
 		super(builder);
 		dataType = builder.getDataType();
-		index = builder.getIndex();
+		value = builder.getValue();
 	}
 	
 	protected void setDataType(DataType dataType) {
@@ -36,12 +36,12 @@ public abstract class ValueToken extends TerminalToken implements Valuable {
 		return dataType;
 	}
 	
-	protected void setIndex(int index) {
-		this.index = index;
+	protected void setValue(Object value) {
+		this.value = value;
 	}
 	
-	public int getIndex() {
-		return index;
+	public Object getValue() {
+		return value;
 	}
 	
 	public BigDecimal getNumberValue() {
@@ -62,9 +62,5 @@ public abstract class ValueToken extends TerminalToken implements Valuable {
 	
 	public Boolean getBooleanValue() {
 		return ValueUtil.getBooleanValue(this);
-	}
-	
-	public Object getValue() {
-		return ValueUtil.getValue(this);
 	}
 }
