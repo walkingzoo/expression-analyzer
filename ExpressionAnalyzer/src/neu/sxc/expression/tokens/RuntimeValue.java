@@ -15,12 +15,12 @@ public final class RuntimeValue implements Valuable {
 	/**
 	 * 数据类型
 	 */
-	private DataType dataType;
+	private final DataType dataType;
 	
 	/**
 	 * 值
 	 */
-	private Object value;
+	private final Object value;
 	
 	public RuntimeValue(TokenBuilder builder) {
 		dataType = builder.getDataType();

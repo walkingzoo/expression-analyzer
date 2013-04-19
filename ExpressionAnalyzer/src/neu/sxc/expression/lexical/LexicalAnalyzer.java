@@ -55,7 +55,7 @@ public class LexicalAnalyzer {
 	/**
 	 * 表达式中涉及的函数
 	 */
-	private Map<String, Function> functionTable;
+	private Map<String, Function> functionDefinitions;
 	
 	public LexicalAnalyzer() {}
 	
@@ -72,16 +72,16 @@ public class LexicalAnalyzer {
 	/**
 	 * 词法分析
 	 * @param expression 表达式
-	 * @param functionTable 表达式涉及的函数
+	 * @param functionDefinitions 表达式涉及的函数
 	 * @return
 	 * @throws LexicalException
 	 */
-	public List<TerminalToken> analysis(String expression, Map<String, Function> functionTable) throws LexicalException {
+	public List<TerminalToken> analysis(String expression, Map<String, Function> functionDefinitions) throws LexicalException {
 		if(expression == null || expression.length() == 0)
 			throw new LexicalException("Invalid empty expression.");
 		
 		Scanner scanner = new Scanner(expression);
-		this.functionTable = functionTable;
+		this.functionDefinitions = functionDefinitions;
 		
 		try {
 			List<TerminalToken> tokens = doAnalysis(scanner);
@@ -310,7 +310,7 @@ public class LexicalAnalyzer {
 	 */
 	private Function findFunction(String functionName) {
 		if(hasCustomizedFunction(functionName))
-			return functionTable.get(functionName);
+			return functionDefinitions.get(functionName);
 		else
 			return SystemFunctions.getFunction(functionName);
 	}
@@ -321,8 +321,8 @@ public class LexicalAnalyzer {
 	 * @return
 	 */
 	private boolean hasCustomizedFunction(String functionName) {
-		if(functionTable == null || functionTable.size() == 0)
+		if(functionDefinitions == null || functionDefinitions.size() == 0)
 			return false;
-		return functionTable.keySet().contains(functionName);
+		return functionDefinitions.keySet().contains(functionName);
 	}
 }

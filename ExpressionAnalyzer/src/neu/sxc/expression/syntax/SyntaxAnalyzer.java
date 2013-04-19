@@ -102,14 +102,12 @@ public class SyntaxAnalyzer {
 	 * @return
 	 * @throws SyntaxException
 	 */
-	public Valuable analysis(List<TerminalToken> tokens, Map<String, Valuable> variableTable)
+	public Valuable analysis(List<TerminalToken> tokens, Map<String, Valuable> variableInitialValues)
 				throws SyntaxException {
 		this.finalResult = null;
 		
 		//构造初始上下文，并压入上下文栈
-		Map<String, Valuable> initVariableTable = new HashMap<String, Valuable>();
-		initVariableTable.putAll(variableTable);
-		contextStack.push(new Context(true, initVariableTable, 0));
+		contextStack.push(new Context(true, variableInitialValues, 0));
 		
 		int index = 0;
 		while(index < tokens.size()) {

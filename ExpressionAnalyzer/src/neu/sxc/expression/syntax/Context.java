@@ -21,7 +21,7 @@ public class Context {
 	/**
 	 * 上下文中的变量和其对应的值
 	 */
-	private Map<String, Valuable> variableTable;
+	private Map<String, Valuable> variableTable = new HashMap<String, Valuable>();
 	
 	/**
 	 * 上下文的开始位置
@@ -30,7 +30,9 @@ public class Context {
 	
 	public Context(boolean effective, Map<String, Valuable> variableTable, int startIndex) {
 		this.effective = effective;
-		this.variableTable = variableTable;
+		if(variableTable == null)
+			variableTable = new HashMap<String, Valuable>();
+		this.variableTable.putAll(variableTable);
 		this.startIndex = startIndex;
 	}
 
@@ -61,10 +63,8 @@ public class Context {
 	 * @return
 	 */
 	public Context constructUpon(boolean effective, int startIndex) {
-		Map<String, Valuable> variableTableUpon = new HashMap<String, Valuable>();
 		//将本上下文的变量全部复制到新上下文
-		variableTableUpon.putAll(variableTable);
-		return new Context(effective, variableTableUpon, startIndex);
+		return new Context(effective, variableTable, startIndex);
 	}
 	
 	/**

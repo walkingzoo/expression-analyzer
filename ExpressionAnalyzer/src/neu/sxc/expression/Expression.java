@@ -15,7 +15,6 @@ import neu.sxc.expression.lexical.LexicalException;
 import neu.sxc.expression.syntax.SyntaxAnalyzer;
 import neu.sxc.expression.syntax.SyntaxException;
 import neu.sxc.expression.syntax.function.Function;
-import neu.sxc.expression.tokens.RuntimeValue;
 import neu.sxc.expression.tokens.TerminalToken;
 import neu.sxc.expression.tokens.TokenBuilder;
 import neu.sxc.expression.tokens.TokenType;
@@ -30,6 +29,7 @@ import neu.sxc.expression.tokens.Valuable;
  * 或者直接调用reParseAndEvaluate()，重新执行词法分析并计算结果
  */
 public class Expression {
+	
 	private String expression;
 	
 	/**
@@ -38,17 +38,22 @@ public class Expression {
 	private List<TerminalToken> tokens;
 	
 	/**
-	 * 变量名及其对应的值
+	 * 变量初始值
 	 */
-	private Map<String, Valuable> variableTable = new HashMap<String, Valuable>();
+	private Map<String, Valuable> variableInitialValues = new HashMap<String, Valuable>();
+	
+	/**
+	 * 表达式执行后变量的值
+	 */
+	private Map<String, Valuable> variableResult = new HashMap<String, Valuable>();
 	
 	/**
 	 * 函数名及其对应的函数定义
 	 */
-	private Map<String, Function> functionTable = new HashMap<String, Function>();
+	private Map<String, Function> functionDefinitions = new HashMap<String, Function>();
 	
 	/**
-	 * 表达式最终结果
+	 * 执行结果
 	 */
 	private Valuable finalResult;
 	
@@ -138,51 +143,55 @@ public class Expression {
 	}
 	
 	/**
-	 * 设置变量值
-	 * @param name 变量名
-	 * @param value 变量值
-	 */
-	public void setVariableValue(String name, Object value) {
-		RuntimeValue runtimeValue = TokenBuilder.buildRuntimeValue(value);
-		variableTable.put(name, runtimeValue);
-	}
-	
-	/**
-	 * 获取变量值
-	 * @param name 变量名
-	 * @return
-	 */
-	public Valuable getVariableValue(String name) {
-		return variableTable.get(name);
-	}
-	
-	public Map<String, Valuable> getVariableTable() {
-		return variableTable;
-	}
-	
-	/**
-	 * 删除变量
+	 * 初始化变量
 	 * @param name
+	 * @param value
 	 */
-	public void removeVariable(String name) {
-		variableTable.remove(name);
+	public void initVariable(String name, Object value) {
+		variableInitialValues.put(name, TokenBuilder.buildRuntimeValue(value));
 	}
 	
 	/**
-	 * 新增函数
+	 * 获取表达式执行之后变量值
+	 * @param name 变量名
+	 * @return 变量值
+	 */
+	public Valuable getVariableValueAfterEvaluate(String name) {
+		return variableResult.get(name);
+	}
+	
+	/**
+	 * 获取表达式执行之后所有变量值
+	 * @return 所有变量值
+	 */
+	public Map<String, Valuable> getAllVariableValueAfterEvaluate() {
+		return variableResult;
+	}
+	
+	/**
+	 * 新增函数定义
 	 * @param function
 	 */
 	public void addFunction(Function function) {
 		function.checkFunctionDefinition();
-		functionTable.put(function.getName(), function);
+		functionDefinitions.put(function.getName(), function);
 	}
 	
+	/**
+	 * 获取函数定义
+	 * @param functionName
+	 * @return
+	 */
 	public Function getFunction(String functionName) {
-		return functionTable.get(functionName);
+		return functionDefinitions.get(functionName);
 	}
 	
-	public Map<String, Function> getFunctionTable() {
-		return functionTable;
+	/**
+	 * 获取所有函数定义
+	 * @return
+	 */
+	public Map<String, Function> getFunctionDefinitions() {
+		return functionDefinitions;
 	}
 	
 	/**
@@ -190,7 +199,7 @@ public class Expression {
 	 * @param functionName
 	 */
 	public void removeFunction(String functionName) {
-		functionTable.remove(functionName);
+		functionDefinitions.remove(functionName);
 	}
 	
 	public Valuable getFinalResult() {
@@ -203,7 +212,7 @@ public class Expression {
 	 * @return token序列
 	 */
 	public List<TerminalToken> lexicalAnalysis() throws LexicalException {
-		tokens = lexicalAnalyzer.analysis(expression, functionTable);
+		tokens = lexicalAnalyzer.analysis(expression, functionDefinitions);
 		return tokens;
 	}
 	
@@ -217,14 +226,14 @@ public class Expression {
 			throw new RuntimeException("The 'tokens' is null, Please go for lexical analysis by invoking 'lexicalAnalysis()' first.");
 		
 		//语法分析，返回最终结果
-		finalResult = syntaxAnalyzer.analysis(tokens, variableTable);
-		//更新变量值
-		variableTable = syntaxAnalyzer.getVariableTable();
+		finalResult = syntaxAnalyzer.analysis(tokens, variableInitialValues);
+		//设置执行之后变量值
+		variableResult = syntaxAnalyzer.getVariableTable();
 		return finalResult;
 	}
 	
 	/**
-	 * 解析表达式，重新执行词法分析，然后计算表达式
+	 * 解析表达式，先执行词法分析，然后计算表达式
 	 * @return 解析结果
 	 * @throws LexicalException 词法错误异常
 	 * @throws SyntaxException 语法错误异常
@@ -234,22 +243,35 @@ public class Expression {
 		return evaluate();
 	}
 	
+	/**
+	 * 重置表达式
+	 */
 	public void clear() {
 		tokens = null;
 		finalResult = null;
-		variableTable.clear();
-		functionTable.clear();
+		variableInitialValues.clear();
+		variableResult.clear();
+		functionDefinitions.clear();
 	}
 	
+	/**
+	 * 清除词法分析结果
+	 */
 	public void clearTokens() {
 		tokens = null;
 	}
 	
-	public void clearVariableTable() {
-		variableTable.clear();
+	/**
+	 * 清除所有变量初始值
+	 */
+	public void clearVariableInitialValues() {
+		variableInitialValues.clear();
 	}
 	
-	public void clearFunctionTable() {
-		functionTable.clear();
+	/**
+	 * 清除所有函数定义
+	 */
+	public void clearFunctionDefinitions() {
+		functionDefinitions.clear();
 	}
 }
