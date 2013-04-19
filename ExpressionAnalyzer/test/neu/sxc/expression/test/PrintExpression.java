@@ -21,9 +21,9 @@ public class PrintExpression {
 			printToken(exp.getFinalResult());
 		}
 		
-		if(exp.getVariableTable().size()>0) {
+		if(exp.getAllVariableValueAfterEvaluate().size()>0) {
 			Printer.println("----------Variable Values-----------");
-			for(Entry<String, Valuable> variable : exp.getVariableTable().entrySet()) {
+			for(Entry<String, Valuable> variable : exp.getAllVariableValueAfterEvaluate().entrySet()) {
 				Printer.print(variable.getKey() + ":");
 				printToken(variable.getValue());
 			}

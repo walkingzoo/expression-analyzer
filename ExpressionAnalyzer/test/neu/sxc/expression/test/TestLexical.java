@@ -56,7 +56,7 @@ public class TestLexical extends TestCase {
 	private void lexicalAnalysis(Expression expression) {
 		LexicalAnalyzer la = new LexicalAnalyzer();
 		try {
-			List<TerminalToken> tokens = la.analysis(expression.getExpression(), expression.getFunctionTable());
+			List<TerminalToken> tokens = la.analysis(expression.getExpression(), expression.getFunctionDefinitions());
 			PrintExpression.printTokens(tokens);
 		} catch (LexicalException e) {
 			e.printStackTrace();

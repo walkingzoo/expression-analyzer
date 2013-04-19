@@ -3,16 +3,13 @@ package neu.sxc.expression.test;
 import java.io.FileInputStream;
 import java.io.IOException;
 
+import junit.framework.TestCase;
 import neu.sxc.expression.Expression;
 import neu.sxc.expression.ExpressionFactory;
 import neu.sxc.expression.lexical.LexicalException;
 import neu.sxc.expression.syntax.ArgumentsMismatchException;
 import neu.sxc.expression.syntax.SyntaxException;
 import neu.sxc.expression.syntax.VariableNotInitializedException;
-import neu.sxc.expression.tokens.Valuable;
-
-import junit.framework.TestCase;
-
 
 public class TestSyntax extends TestCase{
 	
@@ -26,11 +23,18 @@ public class TestSyntax extends TestCase{
 	}
 	
 	public void testArithmetic() {
-		Expression expression = factory.getExpression("a=1;b=a+1;");
-//		expression.setVariableValue("a", 2);
-		evaluate(expression);
-		Valuable b = expression.getVariableValue("b");
-		Printer.println(b.getNumberValue());
+		Expression expression = factory.getExpression("a=a+1;");
+		expression.initVariable("a", 2);
+		
+		expression.lexicalAnalysis();
+		
+		System.out.println("result:" + expression.evaluate().getValue());
+		System.out.println("a = " + expression.getVariableValueAfterEvaluate("a").getValue());
+		System.out.println("-------------------------------------");
+		
+		System.out.println("result:" + expression.evaluate().getValue());
+		System.out.println("a = " + expression.getVariableValueAfterEvaluate("a").getValue());
+		System.out.println("-------------------------------------");
 	}
 	
 	public void testCompare() {
