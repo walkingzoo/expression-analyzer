@@ -24,8 +24,7 @@ import neu.sxc.expression.tokens.Valuable;
  * 表达式
  * 
  * @author shanxuecheng
- * 调用setVariableValue、removeVariable、addFunction、removeFunction后，
- * 为更新词法分析结果，需要重新调用lexicalAnalysis()，
+ * 调用addFunction、removeFunction后，为更新词法分析结果，需要重新调用lexicalAnalysis()，
  * 或者直接调用reParseAndEvaluate()，重新执行词法分析并计算结果
  */
 public class Expression {
