@@ -31,7 +31,7 @@ public class TestSyntax extends TestCase{
 		System.out.println("result:" + expression.evaluate().getValue());
 		System.out.println("a = " + expression.getVariableValueAfterEvaluate("a").getValue());
 		System.out.println("-------------------------------------");
-		
+		expression.initVariable("a", 5);
 		System.out.println("result:" + expression.evaluate().getValue());
 		System.out.println("a = " + expression.getVariableValueAfterEvaluate("a").getValue());
 		System.out.println("-------------------------------------");
