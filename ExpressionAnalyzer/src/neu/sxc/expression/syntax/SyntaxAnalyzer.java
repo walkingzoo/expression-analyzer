@@ -107,7 +107,8 @@ public class SyntaxAnalyzer {
 		this.finalResult = null;
 		
 		//构造初始上下文，并压入上下文栈
-		contextStack.push(new Context(true, variableInitialValues, 0));
+		conditionStack.push(true);
+		contextStack.push(new Context(true, variableInitialValues, 0, 0, 0));
 		
 		int index = 0;
 		while(index < tokens.size()) {
@@ -142,10 +143,12 @@ public class SyntaxAnalyzer {
 					throw new SyntaxException(currentToken);
 				break;
 			case EXECUTION:
-				Executable executable = ((ExecutionToken)syntaxStackTop).getExecutable();
-				if(executable == null) //需要执行的是函数，从函数符号栈取出函数定义
-					executable = functionTokenStack.top().getFunction();
-				execute(executable);
+				if(conditionStack.top()) {
+					Executable executable = ((ExecutionToken)syntaxStackTop).getExecutable();
+					if(executable == null) //需要执行的是函数，从函数符号栈取出函数定义
+						executable = functionTokenStack.top().getFunction();
+					execute(executable);
+				}
 				break;
 			case CONTEXT_OPERATION:
 				try {
@@ -197,6 +200,8 @@ public class SyntaxAnalyzer {
 		case FUNCTION:
 			functionTokenStack.push((FunctionToken)currentToken);	//压入函数栈
 			argumentStartIndexStack.push(semanticStack.size());	//压入函数参数在语义栈中的起始位置
+			break;
+		default:
 			break;
 		}
 	}
@@ -326,7 +331,8 @@ public class SyntaxAnalyzer {
 			//从上下文栈中取当前上下文
 			Context currentContext = contextStack.top();
 			//基于当前上下文创建新的上下文，并压入上下文栈
-			contextStack.push(currentContext.constructUpon(effective, semanticStack.size()));
+			contextStack.push(currentContext.constructUpon(effective, semanticStack.size(),
+					functionTokenStack.size(), operatorTokenStack.size()));
 			break;
 		case END_CONTEXT:
 			//上下文结束，从上下文栈弹出
@@ -335,8 +341,8 @@ public class SyntaxAnalyzer {
 				//如果该上下文有效，即条件为真true，则将其更新到当前栈顶上下文
 				contextStack.top().update(topContext);
 			} else {
-				//如果该上下文无效，即条件为false，则在语义栈中将其开始位置之后的所有元素弹出
-				recoverSemanticStack(topContext.getStartIndex());
+				//如果该上下文无效，即条件为false，清理栈
+				clearStacksAfterInvalidContext(topContext);
 			}
 			break;
 		}
@@ -352,13 +358,16 @@ public class SyntaxAnalyzer {
 		currentContext.setVariableValue(text, value);
 	}
 	
-	/**
-	 * 弹出语义栈在指定位置之后的所有元素
-	 * @param startIndex
-	 */
-	private void recoverSemanticStack(int startIndex) {
-		while(semanticStack.size() > startIndex)
+	private void clearStacksAfterInvalidContext(Context invalidContext) {
+		//弹出语义栈在指定位置之后的所有元素
+		while(semanticStack.size() > invalidContext.getSemanticStackStartIndex())
 			semanticStack.pop();
+		while(functionTokenStack.size() > invalidContext.getFunctionStackStartIndex()) {
+			functionTokenStack.pop();
+			argumentStartIndexStack.pop();
+		}
+		while(operatorTokenStack.size() > invalidContext.getOperatorStackStartIndex())
+			operatorTokenStack.pop();
 	}
 	
 	private void clearStacks() {
