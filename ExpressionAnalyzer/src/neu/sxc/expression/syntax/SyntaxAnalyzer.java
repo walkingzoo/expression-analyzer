@@ -59,7 +59,7 @@ public class SyntaxAnalyzer {
 	private Stack<FunctionToken> functionTokenStack = new Stack<FunctionToken>();
 	
 	/**
-	 * 用于记录函数参数在Token序列中的开始位置
+	 * 用于记录函数参数在语义栈中的开始位置
 	 */
 	private Stack<Integer> argumentStartIndexStack = new Stack<Integer>();
 	
